@@ -1,117 +1,140 @@
 <template>
-  <div>
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      auto-complete="on"
-      label-position="left"
+  <a-form
+    :form="form"
+    @submit="handleSubmit"
+  >
+    <a-form-item
+      label="Note"
+      :label-col="{ span: 5 }"
+      :wrapper-col="{ span: 12 }"
     >
-      <h3>vue-admin-template</h3>
-      <el-form-item prop="username">
-        <el-input
-          prefix-icon="el-icon-search"
-          v-model="loginForm.username"
-          name="username"
-          type="text"
-          auto-complete="on"
-          placeholder="username"
-        />
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          prefix-icon="el-icon-search"
-          :type="pwdType"
-          v-model="loginForm.password"
-          name="password"
-          auto-complete="on"
-          placeholder="password"
-          @keyup.enter.native="handleLogin"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          :loading="loading"
-          type="primary"
-          style="width:100%;"
-          @click.native.prevent="handleLogin"
-        >Sign in</el-button>
-      </el-form-item>
-      <div>
-        <span>username: admin</span>
-        <span>password: admin</span>
-        <span>role :0</span>
-      </div>
-      <div>
-        <span>username: editor</span>
-        <span>password: editor</span>
-        <span>role :1</span>
-      </div>
-      <div>
-        <span>username: reader</span>
-        <span>password: reader</span>
-        <span>role :2</span>
-      </div>
-    </el-form>
-  </div>
+      <a-input
+        v-decorator="[
+          'note',
+          {rules: [{ required: true, message: 'Please input your note!' }]}
+        ]"
+      />
+    </a-form-item>
+    <a-form-item
+      label="Gender"
+      :label-col="{ span: 5 }"
+      :wrapper-col="{ span: 12 }"
+    >
+      <a-select
+        v-decorator="[
+          'gender',
+          {rules: [{ required: true, message: 'Please select your gender!' }]}
+        ]"
+        placeholder="Select a option and change input text above"
+        @change="handleSelectChange"
+      >
+        <a-select-option value="male">
+          male
+        </a-select-option>
+        <a-select-option value="female">
+          female
+        </a-select-option>
+      </a-select>
+    </a-form-item>
+    <a-form-item
+      :wrapper-col="{ span: 12, offset: 5 }"
+    >
+      <AButton
+        type="primary"
+        html-type="submit"
+      >
+        Submit
+      </AButton>
+    </a-form-item>
+  </a-form>
 </template>
 
 <script>
-import serveiceManage from "../../service/index";
-import {savelocalStorageItem} from '../../utils/common'
-import axios from 'axios'
+
 export default {
-  name: "Login",
-  data() {
-    const validateUsername = (rule, value, callback) => {
-      if (value.length < 2) {
-        callback(new Error("用户名密码不能小于5位"));
-      } else {
-        callback();
-      }
-    };
-    const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("密码不能小于5位"));
-      } else {
-        callback();
-      }
-    };
+  data () {
     return {
-      loginForm: {
-        username: "admin",
-        password: "admin",
-        logintype:"web"
-      },
-      loginRules: {
-        username: [
-          { required: true, trigger: "blur", validator: validateUsername }
-        ],
-        password: [{ required: true, trigger: "blur", validator: validatePass }]
-      },
-      loading: false,
-      pwdType: "password",
-      redirect: undefined
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this),
     };
   },
-  watch: {},
   methods: {
-    handleLogin() {
-
-      this.$post('user/user_login',{username:'游客',password:'123456',logintype:'web'}).then(res=>{
-        this.loading = false;
-              if (res) {
-                savelocalStorageItem('access-token',res.data.data.token);
-                this.$router.push("/");
-              }
-      }).catch(err=>{
-        this.$message.error("error submit!!"); //登录失败提示错误
-          return false;
+    handleSubmit (e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
       });
-    }
-  }
+    },
+    handleSelectChange (value) {
+      console.log(value);
+      this.form.setFieldsValue({
+        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      });
+    },
+  },
 };
 </script>
+
+// <script>
+// import serveiceManage from "../../service/index";
+// import {savelocalStorageItem} from '../../utils/common'
+// import axios from 'axios'
+// export default {
+//   name: "Login",
+//   data() {
+//     const validateUsername = (rule, value, callback) => {
+//       if (value.length < 2) {
+//         callback(new Error("用户名密码不能小于5位"));
+//       } else {
+//         callback();
+//       }
+//     };
+//     const validatePass = (rule, value, callback) => {
+//       if (value.length < 5) {
+//         callback(new Error("密码不能小于5位"));
+//       } else {
+//         callback();
+//       }
+//     };
+//     return {
+//       loginForm: {
+//         username: "admin",
+//         password: "admin",
+//         logintype:"web"
+//       },
+//       loginRules: {
+//         username: [
+//           { required: true, trigger: "blur", validator: validateUsername }
+//         ],
+//         password: [{ required: true, trigger: "blur", validator: validatePass }]
+//       },
+//       loading: false,
+//       pwdType: "password",
+//       redirect: undefined
+//     };
+//   },
+//   watch: {},
+//   methods: {
+//     handleLogin() {
+//       var {username,password,logintype} = this.loginForm;
+//       this.$post('user/user_login',{username,password,logintype}).then(res=>{
+//         debugger
+//         this.loading = false;
+//               if (res) {
+//                 var token = res.data.data.token
+//                 savelocalStorageItem('access_token',token);
+//                 this.$router.push("/");
+//               }
+//       }).catch(err=>{
+//         this.$message.error("error submit!!"); //登录失败提示错误
+//           return false;
+//       });
+//     }
+//   }
+// };
+// </script>
 <style scoped>
 div span + span {
   margin-left: 20px;

@@ -1,20 +1,20 @@
 import axios from 'axios'
 import qs from 'querystring'
 import {getlocalStorageItm,savelocalStorageItem} from './common'
-import router from '../router';
+import router from '../router.js';
 
 axios.defaults.timeout = 5000; //设置请求超时
-axios.defaults.baseURL = "http://122.225.120.146:8159/jhzhps-back/";
+axios.defaults.baseURL = "http://122.225.120.146:8159/jhzhps-vue-back/"; //设置后台接口站点地址
 
 //http request拦截器
 axios.interceptors.request.use(
     config=>{
-        const token = getlocalStorageItm('access-token');
+        const token = getlocalStorageItm('access_token');
         config.headers = {
             'Content-Type':'application/x-www-form-urlencoded'
         }
         if(token){
-            config.params = {'login-token':token}
+            config.params = {'access_token':token}
         }
         if(config.method === 'post') {
             config.data = qs.stringify(config.data);

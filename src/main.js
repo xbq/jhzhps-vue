@@ -1,29 +1,28 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
-import router from './router'
-import ElementUI from 'element-ui';
+import App from './App.vue'
+import router from './router.js'
+import store from './store'
 import '@/utils/global'//全局
 import './promission'//这里进行路由后台获取的模拟
-import 'element-ui/lib/theme-chalk/index.css';
-import '@/styles/index.scss' // global css
 import {get,post,patch,put} from './utils/http.js'
+import {Form,Input,Button,Select} from 'ant-design-vue'
 
-
+Vue.use(Form);
+Vue.use(Input);
+Vue.use(Button);
+Vue.use(Select);
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
-Vue.use(ElementUI)
 Vue.prototype.$get = get;
 Vue.prototype.$post = post;
 Vue.prototype.$patch = patch;
 Vue.prototype.$put = put;
 
-/* eslint-disable no-new */
+Vue.config.productionTip = false
+
 new Vue({
-  el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-})
+  store,
+  render: h => h(App)
+}).$mount('#app')

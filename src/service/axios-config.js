@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Message, MessageBox } from "element-ui";
 
 /****** 创建axios实例 ******/
 const service = axios.create({
@@ -26,7 +25,7 @@ service.interceptors.response.use(
     const res = response.data;
     console.log("添加响应拦截器", response);
     if (res.code !== 200) {
-      Message({
+      alert({
         type: "error",
         message: res.message,
         duration: 5 * 1000

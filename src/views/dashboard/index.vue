@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    我是主页
+    <a-button type="primary">Button></a-button>
   </div>
 </template>
 
