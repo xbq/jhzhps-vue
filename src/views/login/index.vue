@@ -1,143 +1,107 @@
 <template>
   <a-form
+    id="components-form-demo-normal-login"
     :form="form"
+    class="login-form"
     @submit="handleSubmit"
   >
-    <a-form-item
-      label="Note"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 12 }"
-    >
+    <a-form-item>
       <a-input
         v-decorator="[
-          'note',
-          {rules: [{ required: true, message: 'Please input your note!' }]}
+          'username',
+          { rules: [{ required: true, message: 'Please input your username!' }] }
         ]"
-      />
+        placeholder="username"
+        name="username"
+      >
+        <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
+      </a-input>
     </a-form-item>
-    <a-form-item
-      label="Gender"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 12 }"
-    >
-      <a-select
+    <a-form-item>
+      <a-input
         v-decorator="[
-          'gender',
-          {rules: [{ required: true, message: 'Please select your gender!' }]}
+          'password',
+          { rules: [{ required: true, message: 'Please input your Password!' }] }
         ]"
-        placeholder="Select a option and change input text above"
-        @change="handleSelectChange"
+        type="password"
+        placeholder="password"
+        name="password"
       >
-        <a-select-option value="male">
-          male
-        </a-select-option>
-        <a-select-option value="female">
-          female
-        </a-select-option>
-      </a-select>
+        <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
+      </a-input>
     </a-form-item>
-    <a-form-item
-      :wrapper-col="{ span: 12, offset: 5 }"
-    >
-      <AButton
-        type="primary"
-        html-type="submit"
-      >
-        Submit
-      </AButton>
+    <a-form-item>
+      <a-checkbox
+        v-decorator="[
+          'remember',
+          {
+            valuePropName: 'checked',
+            initialValue: true,
+          }
+        ]"
+        name="remember"
+      >Remember me</a-checkbox>
+      <a class="login-form-forgot" href>Forgot password</a>
+      <a-button type="primary" html-type="submit" class="login-form-button">Log in</a-button>Or
+      <a href>register now!</a>
     </a-form-item>
   </a-form>
 </template>
 
 <script>
-
+ import { savelocalStorageItem } from "../../utils/common"
 export default {
-  data () {
+  name:'login',
+  data(){
     return {
-      formLayout: 'horizontal',
-      form: this.$form.createForm(this),
-    };
+
+    }
+  },
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+    // this.form.setFieldsValue({
+    //   loginForm:{
+    //     username:"admin",
+    //     password:"admin",
+    //     logintype:"web"
+    //   }
+    // })
   },
   methods: {
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          console.log("Received values of form: ", values);
+          var { username, password } = values;
+          this.$post("user/user_login", { username:username, password:password,logintype:'web' })
+            .then(res => {
+              if (res) {
+                var token = res.data.data.token;
+                savelocalStorageItem("access_token", token);
+                this.$router.push("/");
+              }
+            })
+            .catch(err => {
+              this.$message.error("error submit!!"); //登录失败提示错误
+              return false;
+            });
         }
       });
-    },
-    handleSelectChange (value) {
-      console.log(value);
-      this.form.setFieldsValue({
-        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-      });
-    },
-  },
+    }
+  }
 };
 </script>
-
-// <script>
-// import serveiceManage from "../../service/index";
-// import {savelocalStorageItem} from '../../utils/common'
-// import axios from 'axios'
-// export default {
-//   name: "Login",
-//   data() {
-//     const validateUsername = (rule, value, callback) => {
-//       if (value.length < 2) {
-//         callback(new Error("用户名密码不能小于5位"));
-//       } else {
-//         callback();
-//       }
-//     };
-//     const validatePass = (rule, value, callback) => {
-//       if (value.length < 5) {
-//         callback(new Error("密码不能小于5位"));
-//       } else {
-//         callback();
-//       }
-//     };
-//     return {
-//       loginForm: {
-//         username: "admin",
-//         password: "admin",
-//         logintype:"web"
-//       },
-//       loginRules: {
-//         username: [
-//           { required: true, trigger: "blur", validator: validateUsername }
-//         ],
-//         password: [{ required: true, trigger: "blur", validator: validatePass }]
-//       },
-//       loading: false,
-//       pwdType: "password",
-//       redirect: undefined
-//     };
-//   },
-//   watch: {},
-//   methods: {
-//     handleLogin() {
-//       var {username,password,logintype} = this.loginForm;
-//       this.$post('user/user_login',{username,password,logintype}).then(res=>{
-//         debugger
-//         this.loading = false;
-//               if (res) {
-//                 var token = res.data.data.token
-//                 savelocalStorageItem('access_token',token);
-//                 this.$router.push("/");
-//               }
-//       }).catch(err=>{
-//         this.$message.error("error submit!!"); //登录失败提示错误
-//           return false;
-//       });
-//     }
-//   }
-// };
-// </script>
-<style scoped>
-div span + span {
-  margin-left: 20px;
+<style>
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
 }
 </style>
+
 

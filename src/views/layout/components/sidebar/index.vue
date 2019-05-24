@@ -1,14 +1,14 @@
-<template>
-    <el-menu mode="vertical" unique-opened :default-active="$route.path" background-color="#304156" text-color="#fff" active-text-color="#409EFF" :router="true">
-      <sidebar-item :routes="routes"></sidebar-item>
-    </el-menu>
+<template><div>
+<Sidebar :routes="routes"></Sidebar>
+</div>
+    
 </template>
 
 <script>
-import sidebarItem from './sidebarItem'
+import Sidebar from './Sidebar'
 
 export default {
-  components: { "sidebar-item":sidebarItem },
+  components: { "Sidebar":Sidebar },
   data(){
     return {
       routes: global.antRouter
