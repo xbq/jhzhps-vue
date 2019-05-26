@@ -16,7 +16,6 @@ Vue.use(Checkbox);
 Vue.use(Message);
 Vue.use(Menu);
 
-Vue.config.productionTip = false
 Vue.config.devtools = true
 Vue.prototype.$get = get;
 Vue.prototype.$post = post;

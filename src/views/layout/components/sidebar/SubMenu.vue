@@ -23,6 +23,7 @@
       <sub-menu
         v-else
         :menu-info="item"
+        :key="props.parentPath ? props.parentPath + '/' + item.path : item.path"
         :parentPath="props.parentPath ? props.parentPath + '/' + item.path : item.path"
       />
     </template>

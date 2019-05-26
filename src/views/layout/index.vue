@@ -1,5 +1,6 @@
 <template>
   <div class="app-wrapper">
+    <headerMenu class="headerMenu-wrap"/>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <app-main></app-main>
@@ -10,12 +11,14 @@ a
 <script>
 import AppMain  from '@/views/layout/components/AppMain'//页面布局的右侧区域
 import sidebar  from '@/views/layout/components/sidebar'//页面布局的左侧菜单
+import headerMenu from '@/views/layout/components/headerMenu'
 
 export default {
   name: 'layout',
   components: {
     sidebar,
-    AppMain
+    AppMain,
+    headerMenu
   }
 }
 </script>

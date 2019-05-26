@@ -19,7 +19,10 @@
           {{item.children[0].meta.title}}
         </span>
         </a-menu-item>
-        <sub-menu v-else :menu-info="item"  :parentPath="parentPath ? parentPath + '/' + item.path : item.path"/>
+        <sub-menu v-else :menu-info="item"
+          :key="parentPath ? parentPath + '/' + item.path : item.path"
+          :parentPath="parentPath ? parentPath + '/' + item.path : item.path"
+          />
       </template>
     </a-menu>
   </div>
