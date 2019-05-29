@@ -5,7 +5,7 @@ import store from './store'
 import '@/utils/global'//全局
 import './promission'//这里进行路由后台获取的模拟
 import {get,post,patch,put} from './utils/http.js'
-import {Form,Input,Button,Select,Icon,Checkbox,Message,Menu} from 'ant-design-vue'
+import {Form,Input,Button,Select,Icon,Checkbox,Message,Menu,Layout} from 'ant-design-vue'
 
 Vue.use(Form);
 Vue.use(Input);
@@ -15,6 +15,7 @@ Vue.use(Icon);
 Vue.use(Checkbox);
 Vue.use(Message);
 Vue.use(Menu);
+Vue.use(Layout);
 
 Vue.config.devtools = true
 Vue.prototype.$get = get;

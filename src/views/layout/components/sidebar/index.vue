@@ -1,5 +1,4 @@
 <template>
-  <div style="width: 256px">
     <a-menu
       mode="inline"
       theme="dark"
@@ -25,7 +24,6 @@
           />
       </template>
     </a-menu>
-  </div>
 </template>
 
 <script>
