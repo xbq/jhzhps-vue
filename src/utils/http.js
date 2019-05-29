@@ -14,7 +14,7 @@ axios.interceptors.request.use(
             'Content-Type':'application/x-www-form-urlencoded'
         }
         if(token){
-            config.params = {'access_token':token}
+            config.params.access_token = token;
         }
         if(config.method === 'post') {
             config.data = qs.stringify(config.data);

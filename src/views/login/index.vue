@@ -69,6 +69,8 @@ export default {
   },
   methods: {
     handleSubmit(e) {
+      //清空localstorage
+      localStorage.clear();
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
