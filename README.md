@@ -34,3 +34,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### layout的加载
 还是没有弄清楚，为什么加载上了layout，暂时只知道应该是因为layout是一级菜单引起的，但不知道为什么
+
+### webpack打包之后部署，出现资源路径不正确的问题
+解决办法就是给router添加baseUrl属性，然后打包完成之后把dist文件夹改名为该属性的值，然后放到服务器上直接访问即可
