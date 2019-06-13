@@ -1,6 +1,69 @@
 <template>
   <div class="app-container">
-    我的桌面
+      <div>
+          <a-row :gutter="15">
+              <a-col class="gutter-row" :span="8">
+                  <h3>待下发</h3>
+                  <a-row class="gutter-box" :gutter="10">
+                      <a-col :span="12" v-for="item in issuedlist">
+                          <h6>{{item.bigLevel}}</h6>
+                          <p>{{item.num}}</p>
+                      </a-col>
+                  </a-row>
+              </a-col>
+              <a-col class="gutter-row" :span="8">
+                  <h3>待审核</h3>
+                  <a-row class="gutter-box" :gutter="10">
+                      <a-col :span="12" v-for="item in auditedlist">
+                          <h6>{{item.bigLevel}}</h6>
+                          <p>{{item.num}}</p>
+                      </a-col>
+                  </a-row>
+              </a-col>
+              <a-col class="gutter-row" :span="8">
+                  <h3>最新报警信息</h3>
+                  <a-row class="gutter-box" :gutter="10">
+                      <a-col :span="12" v-for="item in errorlist">
+                          <h6>{{item.type}}</h6>
+                          <p>{{item.num}}</p>
+                      </a-col>
+                  </a-row>
+              </a-col>
+          </a-row>
+          <div class="divcard">
+              <h3>今日上报情况</h3>
+              <ul class="departList">
+                  <li v-for="(item,index) in companylist" @click="gettable(item.departmentId,index)" :class="active === index ?'active':''">
+                      <div class="left" v-if="index===0">
+                          <img src="./img/first.png" alt="">
+                      </div>
+                      <div class="left" v-else-if="index===1">
+                          <img src="./img/second.png" alt="">
+                      </div>
+                      <div class="left" v-else-if="index===2">
+                          <img src="./img/third.png" alt="">
+                      </div>
+                      <div class="left" v-else>NO.{{index+1}}</div>
+                      <div class="cont">{{item.department}}</div>
+                      <div class="right">
+                          {{item.num}}<span>个</span>
+                      </div>
+                  </li>
+              </ul>
+              <div class="desktable">
+                  <a-table :columns="columns"
+                           :dataSource="data"
+                           :pagination="pagination"
+                           :loading="loading"
+                           :locale="{emptyText: '暂无数据'}"
+                  >
+<!--                      <template slot="name" slot-scope="text">-->
+<!--                          <div class="ellipsis">{{text}}</div>-->
+<!--                      </template>-->
+                  </a-table>
+              </div>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -8,15 +71,291 @@
 export default {
   data() {
     return {
+      issuedlist: [], //待下发列表
+      auditedlist: [], //待审核列表
+      errorlist: [], //最新报警信息列表
+      companylist: [], //企业列表
+      cominfolist: [], //企业信息列表
+      active: 0, // 选择的企业，默认第一个
+      columns: [
+        {
+             title: '任务编号',
+             dataIndex: 'name',
+             // sorter: true,
+             width: '20%',
+            // customHeaderCell: (col) => {
+            //     console.log(col);
+            // },
+            // customRender: (text,record,index) => {
+            //     console.log(text);
+            //     console.log(record);
+            //     console.log(index);
+            //     return `<div style="width: 20%">${text}</div>`
+            // }
+            // scopedSlots: { customRender: 'name' },
+        },
+        {
+             title: '任务类型',
+             dataIndex: 'gender',
+             // filters: [
+             // { text: 'Male', value: 'male' },
+             // { text: 'Female', value: 'female' },
+             // ],
+             width: '20%',
+         },
+         {
+             title: '上报时间',
+             dataIndex: 'email',
+             width: '20%',
+         },
+          {
+              title: '任务地点',
+              dataIndex: 'emaisl',
+              width: '20%',
+          },
+          {
+              title: '详细描述',
+              dataIndex: 'emasdail',
+              width: '20%',
+          }
+      ], // 表格列
+      data: [
+          {
+              key: 1,
+              name: 'rybb',
+              emaisl: 1,
+              emasdail: 1,
+              gender: 1,
+              email: 2
+          }
+      ],
+      pagination: {},
+      loading: false,
     }
   },
   filters: {
-   
+
   },
   created() {
+      // 待下发
+      this.$get("task/sta/groupByBigLevel", { status:5})
+          .then(res => {
+              if (res) {
+                  // console.log(res);
+                  this.issuedlist = res.data.data
+              }
+          })
+          .catch(err => {
+              console.log(err);
+              // this.$message.error("error submit!!"); //登录失败提示错误
+              // return false;
+          });
+      // 待审核
+      this.$get("task/sta/groupByBigLevel", { status:0})
+          .then(res => {
+              if (res) {
+                  // console.log(res);
+                  this.auditedlist = res.data.data
+              }
+          })
+          .catch(err => {
+              console.log(err);
+              // this.$message.error("error submit!!"); //登录失败提示错误
+              // return false;
+          });
+      // 最新报警信息
+      this.$get("alarm/groupByAlarmType", {})
+          .then(res => {
+              if (res) {
+                  // console.log(res);
+                  this.errorlist = res.data.data
+              }
+          })
+          .catch(err => {
+              console.log(err);
+              // this.$message.error("error submit!!"); //登录失败提示错误
+              // return false;
+          });
+      // 获取单位信息
+      this.$get("task/sta/groupByDepartment", {})
+          .then(res => {
+              if (res) {
+                  // console.log(res);
+                  this.companylist = res.data.data
+              }
+          })
+          .catch(err => {
+              console.log(err);
+              // this.$message.error("error submit!!"); //登录失败提示错误
+              // return false;
+          });
   },
   methods: {
-   
+      //校验时间,小于10前面加0
+      checkTime (time) {
+          if(time < 10) return "0" + time;
+          return time;
+      },
+      // 点击企业获取表格数据
+      gettable (departmentid,act) {
+          // 选中的企业
+          this.active = act
+          // 获取当天的时间
+          var myDate = new Date(),
+              now_year = myDate.getFullYear(),
+              now_month = myDate.getMonth(),
+              now_day = myDate.getDate(),
+              now_time = now_year + '-' + this.checkTime(now_month + 1) + '-' + this.checkTime(now_day);
+          // console.log(now_time)
+          var beginTime = now_time.toString() + ' 00:00:00',
+              endTime = now_time.toString() + ' 23:59:59';
+          // 获取相关单位表格信息
+          this.$get("task/getList", {'department': departmentid,
+              'beginTime': beginTime,
+              'endTime': endTime})
+              .then(res => {
+                  if (res) {
+                      console.log(res);
+                  }
+              })
+              .catch(err => {
+                  console.log(err);
+                  // this.$message.error("error submit!!"); //登录失败提示错误
+                  // return false;
+              });
+      }
   }
 }
 </script>
+<style scoped>
+h3{
+    height: 38px;
+    font-family: AlibabaPuHuiTiR;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 1px;
+    color: #323232;
+    padding-left: 23px;
+    position: relative;
+    line-height: 38px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+h3:before{
+    content: '';
+    width: 5px;
+    height: 16px;
+    background-color: #0095ff;
+    position: absolute;
+    left: 13px;
+    top: 11px;
+}
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.gutter-row{
+    height: 240px;
+    background-color: #ffffff;
+    box-shadow: 0px 1px 0px 0px
+    rgba(224, 224, 224, 0.3);
+}
+.gutter-box{
+    padding: 15px;
+    padding-bottom: 16px;
+    text-align: left;
+}
+.gutter-box .ant-col-12{
+    padding: 19px 0 18px 0;
+}
+.gutter-box h6{
+    padding-left: 20px;
+    margin-bottom: 9px;
+    font-family: AlibabaPuHuiTiL;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    color: #888888;
+    line-height: 12px;
+}
+.gutter-box p{
+    padding-left: 20px;
+    font-family: DIN-Regular;
+    font-size: 28px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 2px;
+    color: #323232;
+    line-height: 22px;
+    margin-bottom: 0;
+}
+.divcard{
+    position: relative;
+    height: calc(100vh - 362px)
+}
+.departList{
+    width: 386px;
+    padding-top: 20px;
+    background-color: #f8f8f8;
+    box-shadow: 0px 1px 0px 0px
+    rgba(224, 224, 224, 0.3);
+    position: absolute;
+    z-index: 2;
+    list-style: none;
+    padding-left: 0;
+    height: 100%;
+    margin-left: 20px;
+}
+.departList li{
+    height: 80px;
+    line-height: 80px;
+    border: 1px solid transparent;
+}
+.departList .active{
+    width: 387px;
+    border: 1px solid #e6e6e6;
+    border-right: 2px solid #fff;
+    margin-right: -1px;
+}
+.left{
+    float: left;
+    width: 66px;
+    font-style: italic;
+    color: #323232;
+}
+.cont{
+    margin-left: 9px;
+    float: left;
+}
+.right{
+    float: right;
+    margin-right: 25px;
+    height: 23px;
+    font-family: DIN-Medium;
+    font-size: 28px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 2px;
+    color: #323232;
+}
+.right span{
+    font-family: MicrosoftYaHei;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    color: #888888;
+}
+.desktable{
+    position: absolute;
+    left: 406px;
+    width: calc(100% - 406px);
+    background-color: #ffffff;
+    box-shadow: 0px 1px 0px 0px
+    rgba(224, 224, 224, 0.3);
+    border: solid 1px #e6e6e6;
+    padding-top: 20px;
+    padding-left: 20px;
+}
+</style>

@@ -1,6 +1,13 @@
 module.exports = {
   presets: [
-    '@vue/app'
+    '@vue/app',
+      // ie9+兼容
+      [
+          '@babel/preset-env',
+          {
+              'useBuiltIns': 'entry'
+          }
+      ]
   ],
   plugins: [
     [
