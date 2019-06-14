@@ -1,4 +1,4 @@
 module.exports = {
-    baseUrl: '/jhzhps',
+    publicPath: '/jhzhps',
     lintOnSave: false
 }
