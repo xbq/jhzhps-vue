@@ -31,4 +31,8 @@ body{
   color: #2c3e50;
   height: 100%;
 }
+.ant-layout-header{
+  height: 50px;
+  line-height: 50px;
+}
 </style>

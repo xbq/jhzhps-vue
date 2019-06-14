@@ -53,7 +53,7 @@ export default {
 }
 #components-layout-demo-custom-trigger .trigger {
   font-size: 18px;
-  line-height: 64px;
+  line-height: 50px;
   padding: 0 24px;
   cursor: pointer;
   transition: color .3s;
