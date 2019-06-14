@@ -14,7 +14,11 @@ axios.interceptors.request.use(
             'Content-Type':'application/x-www-form-urlencoded'
         }
         if(token){
+          if(config.data){
+            config.data.access_token = token;
+          }else {
             config.params.access_token = token;
+          }
         }
         if(config.method === 'post') {
             config.data = qs.stringify(config.data);
@@ -53,10 +57,10 @@ export function get(url,params={}){
     return new Promise((resolve,reject)=>{
         axios.get(url,{params:params}).then(res=>{
             resolve(res);
+        }, err=>{
+            reject(err);
         })
-    }).catch(err=>{
-        reject(err)
-    });
+    })
 }
 
 /**

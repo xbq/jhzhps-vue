@@ -2,38 +2,44 @@
   <div class="app-container">
     <div>
       <a-row :gutter="15">
-        <a-col class="gutter-row" :span="8">
-          <h3>待下发</h3>
-          <a-spin :spinning="spinning[0]">
-            <a-row class="gutter-box" :gutter="10">
-              <a-col :span="12" v-for="item in issuedlist">
-                <h6>{{item.bigLevel}}</h6>
-                <p>{{item.num}}</p>
-              </a-col>
-            </a-row>
-          </a-spin>
+        <a-col :span="8">
+          <div class="mycard">
+            <h3>待下发</h3>
+            <a-spin :spinning="spinning[0]">
+              <a-row class="mycardcont" :gutter="10">
+                <a-col :span="12" v-for="item in issuedlist">
+                  <h6>{{item.bigLevel}}</h6>
+                  <p>{{item.num}}</p>
+                </a-col>
+              </a-row>
+            </a-spin>
+          </div>
         </a-col>
-        <a-col class="gutter-row" :span="8">
-          <h3>待审核</h3>
-          <a-spin :spinning="spinning[1]">
-            <a-row class="gutter-box" :gutter="10">
-              <a-col :span="12" v-for="item in auditedlist">
-                <h6>{{item.bigLevel}}</h6>
-                <p>{{item.num}}</p>
-              </a-col>
-            </a-row>
-          </a-spin>
+        <a-col :span="8">
+          <div class="mycard">
+            <h3>待审核</h3>
+            <a-spin :spinning="spinning[1]">
+              <a-row class="mycardcont" :gutter="10">
+                <a-col :span="12" v-for="item in auditedlist">
+                  <h6>{{item.bigLevel}}</h6>
+                  <p>{{item.num}}</p>
+                </a-col>
+              </a-row>
+            </a-spin>
+          </div>
         </a-col>
-        <a-col class="gutter-row" :span="8">
-          <h3>最新报警信息</h3>
-          <a-spin :spinning="spinning[2]">
-            <a-row class="gutter-box" :gutter="10">
-              <a-col :span="12" v-for="item in errorlist">
-                <h6>{{item.type}}</h6>
-                <p>{{item.num}}</p>
-              </a-col>
-            </a-row>
-          </a-spin>
+        <a-col :span="8">
+          <div class="mycard">
+            <h3>最新报警信息</h3>
+            <a-spin :spinning="spinning[2]">
+              <a-row class="mycardcont" :gutter="10">
+                <a-col :span="12" v-for="item in errorlist">
+                  <h6>{{item.type}}</h6>
+                  <p>{{item.num}}</p>
+                </a-col>
+              </a-row>
+            </a-spin>
+          </div>
         </a-col>
       </a-row>
       <div class="divcard">
@@ -67,11 +73,6 @@
                    :loading="loading"
                    :scroll="{ y: 'calc(100vh - 560px)'}"
           >
-<!--            <template slot="name" slot-scope="name" width="50">-->
-<!--              <div class="ellipsis" style="overflow: hidden;-->
-<!--  text-overflow: ellipsis;-->
-<!--  white-space: nowrap;width: 100px" :title="name">{{name}}</div>-->
-<!--            </template>-->
           </a-table>
         </div>
       </div>
@@ -259,60 +260,33 @@ export default {
 }
 </script>
 <style scoped>
-h3 {
-  height: 38px;
-  font-family: AlibabaPuHuiTiR;
-  font-size: 16px;
-  font-weight: normal;
-  font-stretch: normal;
-  letter-spacing: 1px;
-  color: #323232;
-  padding-left: 23px;
-  position: relative;
-  line-height: 38px;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
-}
-h3:before {
-  content: '';
-  width: 5px;
-  height: 16px;
-  background-color: #0095ff;
-  position: absolute;
-  left: 13px;
-  top: 11px;
-}
-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.gutter-row {
+.mycard {
   height: 240px;
+  padding: 0 10px;
   background-color: #ffffff;
-  box-shadow: 0px 1px 0px 0px rgba(224, 224, 224, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
 }
-.gutter-box {
-  padding: 15px;
+.mycardcont {
+  padding: 15px 5px;
   padding-bottom: 16px;
   text-align: left;
 }
-.gutter-box .ant-col-12 {
+.mycardcont .ant-col-12 {
   padding: 19px 0 18px 0;
 }
-.gutter-box h6 {
+.mycardcont h6 {
   padding-left: 20px;
   margin-bottom: 9px;
-  font-family: AlibabaPuHuiTiL;
+  /*font-family: AlibabaPuHuiTiL;*/
   font-size: 12px;
   font-weight: normal;
   letter-spacing: 1px;
   color: #888888;
   line-height: 12px;
 }
- .gutter-box p {
+ .mycardcont p {
    padding-left: 20px;
-   font-family: DIN-Regular;
+   /*font-family: DIN-Regular;*/
    font-size: 28px;
    font-weight: normal;
    font-stretch: normal;
@@ -363,7 +337,7 @@ ellipsis {
    float: right;
    margin-right: 25px;
    height: 23px;
-   font-family: DIN-Medium;
+   /*font-family: DIN-Medium;*/
    font-size: 28px;
    font-weight: normal;
    font-stretch: normal;
@@ -371,7 +345,7 @@ ellipsis {
    color: #323232;
  }
  .right span {
-   font-family: MicrosoftYaHei;
+   /*font-family: MicrosoftYaHei;*/
    font-size: 12px;
    font-weight: normal;
    letter-spacing: 1px;
