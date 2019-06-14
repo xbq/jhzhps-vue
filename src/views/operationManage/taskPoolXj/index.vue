@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    我是权限管理
+    我是任务池-巡检员
   </div>
 </template>
 
@@ -20,6 +20,3 @@ export default {
   }
 }
 </script>
-
-
-

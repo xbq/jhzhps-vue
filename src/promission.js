@@ -2,6 +2,7 @@ import router from './router.js'
 import {get } from './utils/http.js'
 const _import = require('./utils/_import_' + process.env.NODE_ENV) //获取组件的方法
 import Layout from '@/views/layout' //Layout 是架构组件，不在后台返回，在文件里单独引入
+import AppMain from '@/views/layout/components/AppMain'
 import { getlocalStorageItm, savelocalStorageItem } from './utils/common'
 
 const whiteList = ["/login"]; // 不重定向白名单
@@ -51,10 +52,14 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
         if (route.hidden !== "true") {
             if (route.component) {
                 if (route.component === 'Layout') { //Layout组件特殊处理
+                    //一级菜单需要layout以及layout包含的appmain中的router-view
                     route.component = Layout
                 } else {
                     route.component = _import(route.component)
                 }
+            }else{
+                //二级菜单没有配置route.compont属性，需要指定一个router-view
+                route.component = AppMain;
             }
             if (route.children && route.children.length) {
                 route.children = filterAsyncRouter(route.children)

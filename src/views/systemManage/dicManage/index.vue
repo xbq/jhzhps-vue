@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    我是权限管理
+    我是字典管理
   </div>
 </template>
 
@@ -20,6 +20,3 @@ export default {
   }
 }
 </script>
-
-
-

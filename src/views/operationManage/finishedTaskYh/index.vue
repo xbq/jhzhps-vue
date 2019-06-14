@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    我是权限管理
+    我是已结案-养护员
   </div>
 </template>
 
@@ -20,6 +20,3 @@ export default {
   }
 }
 </script>
-
-
-

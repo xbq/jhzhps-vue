@@ -7,13 +7,13 @@
     >
       <template v-for="item in routes">
         <a-menu-item v-if="!item.children" :key="parentPath ? parentPath + '/' + item.path : item.path">
-          <a-icon :type="item.meta.icon" />
+          <a-icon :type="item.meta.icon"  v-if="item.meta.icon!=''"/>
           <span>
           {{ item.meta?item.meta.title:'未设定meta属性title' }}
         </span>
         </a-menu-item>
         <a-menu-item v-else-if="item.children.length==1&&!item.children[0].children" :key="parentPath ? parentPath + '/' + item.children[0].path : ((item.path=='/'?'':item.path) +'/'+ item.children[0].path)">
-          <a-icon :type="item.children[0].meta.icon" />
+          <a-icon :type="item.children[0].meta.icon"  v-if="item.meta.icon!=''"/>
           <span>
           {{item.children[0].meta.title}}
         </span>
