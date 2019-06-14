@@ -31,11 +31,6 @@ body{
   color: #2c3e50;
   height: 100%;
 }
-<<<<<<< HEAD
-.ant-layout-header{
-  height: 50px;
-  line-height: 50px;
-=======
 h3 {
   height: 38px;
   /*font-family: AlibabaPuHuiTiR;*/
@@ -59,6 +54,5 @@ h3:before {
   position: absolute;
   left: 0px;
   top: 11px;
->>>>>>> 6348b96cf9b7370f31c5ab1da07ce2dfbb4c77e8
 }
 </style>
