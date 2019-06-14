@@ -44,7 +44,6 @@ export default {
       this.collapsed = !this.collapsed
     },
     handleClick(e){
-      console.log(e);
       var path = e.key;
       this.$router.push(path)
     }

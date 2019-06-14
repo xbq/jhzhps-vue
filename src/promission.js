@@ -39,7 +39,6 @@ router.beforeEach((to, from, next) => {
 
 function routerGo(to, next) {
     getRouter = filterAsyncRouter(getRouter) //过滤路由
-    console.log(getRouter);
     router.addRoutes(getRouter) //动态添加路由
     global.antRouter = getRouter //将路由数据传递给全局变量，做侧边栏菜单渲染工作
     next({
