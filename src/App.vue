@@ -55,4 +55,8 @@ h3:before {
   left: 0px;
   top: 11px;
 }
+.ant-layout-header{
+	height:50px;
+	line-height: 50px;
+}
 </style>
