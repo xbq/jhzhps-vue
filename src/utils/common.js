@@ -5,3 +5,11 @@ export function getlocalStorageItm(name) { //localStorage 获取数组对象的�
 export function savelocalStorageItem(name, data) { //localStorage 存储数组对象的方法
     localStorage.setItem(name, JSON.stringify(data))
   }
+
+export function removelocalStorageItem(name){
+  localStorage.removeItem(name);
+}
+
+export function clearlocalStorageItem(name){
+  localStorage.clear();
+}
