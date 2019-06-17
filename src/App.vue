@@ -31,6 +31,7 @@ body{
   color: #2c3e50;
   height: 100%;
 }
+/*卡片内样式*/
 h3 {
   height: 38px;
   /*font-family: AlibabaPuHuiTiR;*/
@@ -54,6 +55,51 @@ h3:before {
   position: absolute;
   left: 0px;
   top: 11px;
+}
+.mycardcont {
+  padding: 15px 5px;
+  text-align: left;
+  height: 202px;
+}
+.mycardcont2 {
+  height: 121px;
+}
+.mycardcont>div {
+  padding: 14px 0;
+}
+.mycardcont h6 {
+  padding-left: 20px;
+  margin-bottom: 10px;
+  /*font-family: AlibabaPuHuiTiL;*/
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  color: #888888;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mycardcont p {
+  padding-left: 20px;
+  /*font-family: DIN-Regular;*/
+  font-size: 28px;
+  font-weight: normal;
+  font-stretch: normal;
+  letter-spacing: 2px;
+  color: #323232;
+  line-height: 24px;
+  margin-bottom: 0;
+}
+.mycardcont p span{
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #888888;
+}
+/*卡片外投影*/
+.ant-card-bordered{
+  border: 0;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
 }
 .ant-layout-header{
 	height:50px;

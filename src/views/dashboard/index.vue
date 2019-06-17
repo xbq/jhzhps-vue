@@ -139,7 +139,7 @@ export default {
         defaultPageSize: 5,
         showQuickJumper: true,
         showSizeChanger: true,
-        // showTotal: total => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`,
         // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
         pageSizeOptions: ['5', '10', '20', '30']
       }, // 分页配置
@@ -147,7 +147,7 @@ export default {
     }
   },
   filters: {},
-  created: function () {
+  created() {
     // for (let i = 0; i < 20; i++) {
     //   this.data.push({
     //     key: i+10,
@@ -266,37 +266,12 @@ export default {
   background-color: #ffffff;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
 }
-.mycardcont {
-  padding: 15px 5px;
-  padding-bottom: 16px;
-  text-align: left;
-}
-.mycardcont .ant-col-12 {
-  padding: 19px 0 18px 0;
-}
-.mycardcont h6 {
-  padding-left: 20px;
-  margin-bottom: 9px;
-  /*font-family: AlibabaPuHuiTiL;*/
-  font-size: 12px;
-  font-weight: normal;
-  letter-spacing: 1px;
-  color: #888888;
-  line-height: 12px;
-}
- .mycardcont p {
-   padding-left: 20px;
-   /*font-family: DIN-Regular;*/
-   font-size: 28px;
-   font-weight: normal;
-   font-stretch: normal;
-   letter-spacing: 2px;
-   color: #323232;
-   line-height: 22px;
-   margin-bottom: 0;
- }
  .divcard {
    position: relative;
+   padding: 0 10px;
+   background-color: #ffffff;
+   box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+   margin-top: 15px;
    height: calc(100vh - 362px)
  }
  .departList {
@@ -311,6 +286,7 @@ export default {
    padding-left: 0;
    margin-left: 20px;
    margin-bottom: 0;
+   margin-top: 16px;
  }
  .departList li {
    height: 80px;
@@ -354,12 +330,12 @@ export default {
  .desktable {
    height: calc(100% - 58px);
    position: absolute;
-   left: 406px;
-   width: calc(100% - 406px);
+   left: 416px;
+   width: calc(100% - 426px);
    background-color: #ffffff;
    box-shadow: 0px 1px 0px 0px rgba(224, 224, 224, 0.3);
    border: solid 1px #e6e6e6;
-   padding-top: 20px;
-   padding-left: 20px;
+   padding: 20px 15px 0 20px;
+   margin-top: 16px;
  }
 </style>
