@@ -4,7 +4,7 @@ import {getlocalStorageItm,savelocalStorageItem} from './common'
 import router from '../router.js';
 
 axios.defaults.timeout = 5000; //设置请求超时
-axios.defaults.baseURL = "http://122.225.120.146:8159/jhzhps-vue-back/"; //设置后台接口站点地址
+axios.defaults.baseURL = "http://122.225.120.146:8159/jhzhps-back/"; //设置后台接口站点地址
 
 //http request拦截器
 axios.interceptors.request.use(

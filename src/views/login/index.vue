@@ -87,7 +87,7 @@ export default {
               }
             })
             .catch(err => {
-              this.$message.error("error submit!!"); //登录失败提示错误
+              // this.$message.error("error submit!!"); //登录失败提示错误
               return false;
             });
         }
