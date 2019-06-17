@@ -283,15 +283,14 @@ export default {
    position: absolute;
    z-index: 2;
    list-style: none;
-   padding-left: 0;
    margin-left: 20px;
-   margin-bottom: 0;
    margin-top: 16px;
  }
  .departList li {
    height: 80px;
    line-height: 80px;
    border: 1px solid transparent;
+   cursor: pointer;
  }
  .departList .active {
    width: 387px;
@@ -304,6 +303,7 @@ export default {
    width: 66px;
    font-style: italic;
    color: #323232;
+   text-align: center;
  }
  .cont {
    margin-left: 9px;

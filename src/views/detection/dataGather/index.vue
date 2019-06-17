@@ -53,29 +53,30 @@
           <h3>水质监测点最新数据</h3>
           <a-spin :spinning=false>
             <a-row class="mycardcont mycardcont2" :gutter="10">
-              <a-carousel autoplay>
-                <a slot="customPaging">
-                  <div></div>
-                </a>
-                <div>
-                  <a-col :span="8" v-for="item in waternewdata[0]">
-                    <h6 :title="item.name">{{item.name}}</h6>
-                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
-                  </a-col>
-                </div>
-                <div>
-                  <a-col :span="8" v-for="item in waternewdata[1]">
-                    <h6 :title="item.name">{{item.name}}</h6>
-                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
-                  </a-col>
-                </div>
-                <div>
-                  <a-col :span="8" v-for="item in waternewdata[2]">
-                    <h6 :title="item.name">{{item.name}}</h6>
-                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
-                  </a-col>
-                </div>
-              </a-carousel>
+              <waternewdata></waternewdata>
+<!--              <a-carousel autoplay>-->
+<!--                <a slot="customPaging">-->
+<!--                  <div></div>-->
+<!--                </a>-->
+<!--                <div>-->
+<!--                  <a-col :span="8" v-for="item in waternewdata[0]">-->
+<!--                    <h6 :title="item.name">{{item.name}}</h6>-->
+<!--                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>-->
+<!--                  </a-col>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                  <a-col :span="8" v-for="item in waternewdata[1]">-->
+<!--                    <h6 :title="item.name">{{item.name}}</h6>-->
+<!--                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>-->
+<!--                  </a-col>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                  <a-col :span="8" v-for="item in waternewdata[2]">-->
+<!--                    <h6 :title="item.name">{{item.name}}</h6>-->
+<!--                    <p>{{item.dataValue}}<span>{{item.unit}}</span></p>-->
+<!--                  </a-col>-->
+<!--                </div>-->
+<!--              </a-carousel>-->
             </a-row>
           </a-spin>
         </a-card>
@@ -99,37 +100,104 @@
         <a-card :body-style="{padding: '0 10px'}">
           <h3>监测数据统计
             <a class="tabcircle">
-              <div v-for="i in [0,1,2]" @mouseenter="pointtabindex=i" :class="pointtabindex===i?'active':''"></div>
+              <div v-for="i in [0,1,2]" @mouseenter="datatab(i)" :class="pointtabindex===i?'active':''"></div>
             </a>
           </h3>
           <div class="tabs">
             <div class="times">
               当前时间：{{newtime}}
             </div>
-            <div class="Waterlogging">
+            <div v-if="pointtabindex===0">
               <div class="echarts-title">易涝点水位24小时数据</div>
-              <a-carousel>
-                <a slot="customPaging">
-                  <div></div>
-                </a>
+              <ul class="L-tabtitle">
+                <li class="active" @click="floodechart">白衣</li>
+                <li>白衣</li>
+                <li>白衣qw</li>
+              </ul>
+              <a-spin :spinning=true>
                 <div>
-
+                  <div v-if="ordata" id="L-floorecharts" style="height: 304px;width: 100%"></div>
+                  <nodata v-else></nodata>
                 </div>
-                <div>
-
-                </div>
-                <div>
-
-                </div>
-              </a-carousel>
+              </a-spin>
+            </div>
+            <div v-if="pointtabindex===1">
+              <div class="echarts-title">水质监测点24小时数据</div>
+              <ul class="L-tabtitle">
+                <li class="active" @click="waterechart">白衣</li>
+                <li>白衣</li>
+                <li>白衣qw</li>
+              </ul>
+              <a-spin :spinning=true>
+                <div  v-if="ordata" id="L-waterecharts"  style="height: 304px;width: 100%"></div>
+                <nodata v-else></nodata>
+              </a-spin>
+            </div>
+            <div v-if="pointtabindex===2">
+              <div class="echarts-title">流量监测点24小时数据</div>
+              <a-spin :spinning=true>
+                <div  v-if="ordata" id="L-flowecharts"  style="height: 304px;width: 100%;margin-top: 45px"></div>
+                <nodata v-else></nodata>
+              </a-spin>
             </div>
           </div>
         </a-card>
       </a-col>
       <a-col :span="8">
-        <a-card :body-style="{padding: '0 10px'}"  v-show="pointtabindex===0">
+        <a-card :body-style="{padding: '0 10px'}"  v-if="pointtabindex===0">
           <h3>监测数据</h3>
-          <div style="border-bottom: 1px solid #e0e0e0">
+          <div style="border-bottom: 1px solid #e0e0e0;padding-bottom: 2px">
+            <div class="data-title">易涝点水位今日均值</div>
+            <a-spin :spinning=false>
+              <a-row class="mycardcont mycardcont2" :gutter="10">
+                <a-carousel autoplay>
+                  <a slot="customPaging">
+                    <div></div>
+                  </a>
+                  <div>
+                    <a-col :span="8" v-for="item in 3">
+                      <h6>qwdqdw</h6>
+                      <p>{{item}}</p>
+                    </a-col>
+                  </div>
+                  <div>
+                    <a-col :span="8" v-for="item in 3">
+                      <h6>qwdqdw</h6>
+                      <p>{{item}}</p>
+                    </a-col>
+                  </div>
+                </a-carousel>
+              </a-row>
+            </a-spin>
+          </div>
+          <div style="padding: 8px 0 13px">
+            <div class="data-title">易涝点历史最高水位</div>
+            <a-spin :spinning=false>
+              <a-row class="mycardcont mycardcont2" :gutter="10">
+                <a-carousel autoplay>
+                  <a slot="customPaging">
+                    <div></div>
+                  </a>
+                  <div>
+                    <a-col :span="8" v-for="item in 3">
+                      <h6>qwdqdw</h6>
+                      <p>{{item}}</p>
+                    </a-col>
+                  </div>
+                  <div>
+                    <a-col :span="8" v-for="item in 3">
+                      <h6>qwdqdw</h6>
+                      <p>{{item}}</p>
+                    </a-col>
+                  </div>
+                </a-carousel>
+              </a-row>
+            </a-spin>
+          </div>
+        </a-card>
+        <a-card :body-style="{padding: '0 10px'}"  v-else-if="pointtabindex===1">
+          <h3>监测数据</h3>
+          <div style="border-bottom: 1px solid #e0e0e0;padding-bottom: 2px">
             <div class="data-title">水质监测点24小时均值</div>
             <a-spin :spinning=false>
               <a-row class="mycardcont mycardcont2" :gutter="10">
@@ -153,7 +221,7 @@
               </a-row>
             </a-spin>
           </div>
-          <div>
+          <div style="padding: 8px 0 13px">
             <div class="data-title">水质历史最高数据</div>
             <a-spin :spinning=false>
               <a-row class="mycardcont mycardcont2" :gutter="10">
@@ -178,10 +246,10 @@
             </a-spin>
           </div>
         </a-card>
-        <a-card :body-style="{padding: '0 10px'}"  v-show="pointtabindex===1">
+        <a-card :body-style="{padding: '0 10px'}"  v-else-if="pointtabindex===2">
           <h3>监测数据</h3>
-          <div style="border-bottom: 1px solid #e0e0e0">
-            <div class="data-title">水质监测点24小时均值</div>
+          <div style="border-bottom: 1px solid #e0e0e0;padding-bottom: 2px">
+            <div class="data-title">流量监测点24小时数据</div>
             <a-spin :spinning=false>
               <a-row class="mycardcont mycardcont2" :gutter="10">
                 <a-carousel autoplay>
@@ -204,59 +272,8 @@
               </a-row>
             </a-spin>
           </div>
-          <div>
-            <div class="data-title">水质历史最高数据</div>
-            <a-spin :spinning=false>
-              <a-row class="mycardcont mycardcont2" :gutter="10">
-                <a-carousel autoplay>
-                  <a slot="customPaging">
-                    <div></div>
-                  </a>
-                  <div>
-                    <a-col :span="8" v-for="item in 3">
-                      <h6>qwdqdw</h6>
-                      <p>{{item}}</p>
-                    </a-col>
-                  </div>
-                  <div>
-                    <a-col :span="8" v-for="item in 3">
-                      <h6>qwdqdw</h6>
-                      <p>{{item}}</p>
-                    </a-col>
-                  </div>
-                </a-carousel>
-              </a-row>
-            </a-spin>
-          </div>
-        </a-card>
-        <a-card :body-style="{padding: '0 10px'}"  v-show="pointtabindex===2">
-          <h3>监测数据</h3>
-          <div style="border-bottom: 1px solid #e0e0e0">
-            <div class="data-title">水质监测点24小时均值</div>
-            <a-spin :spinning=false>
-              <a-row class="mycardcont mycardcont2" :gutter="10">
-                <a-carousel autoplay>
-                  <a slot="customPaging">
-                    <div></div>
-                  </a>
-                  <div>
-                    <a-col :span="8" v-for="item in 3">
-                      <h6>qwdqdw</h6>
-                      <p>{{item}}</p>
-                    </a-col>
-                  </div>
-                  <div>
-                    <a-col :span="8" v-for="item in 3">
-                      <h6>qwdqdw</h6>
-                      <p>{{item}}</p>
-                    </a-col>
-                  </div>
-                </a-carousel>
-              </a-row>
-            </a-spin>
-          </div>
-          <div>
-            <div class="data-title">水质历史最高数据</div>
+          <div style="padding: 8px 0 13px">
+            <div class="data-title">流量历史最高数据</div>
             <a-spin :spinning=false>
               <a-row class="mycardcont mycardcont2" :gutter="10">
                 <a-carousel autoplay>
@@ -286,6 +303,8 @@
 </template>
 
 <script>
+import waternewdata from './components/water-newdata'
+import nodata from '../../../components/nodata'
 export default {
   data() {
     return {
@@ -293,8 +312,13 @@ export default {
       newtime: '', // 当前时间
       pointtype: [], //监测点类型统计数据
       floodnewdata: [], //易涝监测点最新数据
-      waternewdata: [], //水质监测点最新数据
+      // waternewdata: [], //水质监测点最新数据
+      ordata: true
     }
+  },
+  components: {
+    waternewdata,
+    nodata
   },
   mounted() {
   },
@@ -382,24 +406,44 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    // 水质监测点最新数据接口
-    this.$get("checkPointData/getLastData", {type: 2})
+    // // 水质监测点最新数据接口
+    // this.$get("checkPointData/getLastData", {type: 2})
+    //   .then(res => {
+    //     if (res) {
+    //       // console.log(res);
+    //       res.data.data.forEach((val,index) => {
+    //         if (index%3 === 0) {
+    //           this.waternewdata.push([])
+    //         }
+    //         this.waternewdata[Math.floor(index/3)].push(val)
+    //       })
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+    //监测数据统计-易涝点水位均值和峰值-tab切换模块接口数据
+    this.$get("checkPointData/avgAndTopDataByType", {type: 1})
       .then(res => {
         if (res) {
-          // console.log(res);
-          res.data.data.forEach((val,index) => {
-            if (index%3 === 0) {
-              this.waternewdata.push([])
-            }
-            this.waternewdata[Math.floor(index/3)].push(val)
-          })
+          console.log(res);
         }
       })
       .catch(err => {
         console.log(err);
       });
-    //监测数据统计-水质监测点今日数据-tab切换模块接口数据
-    this.$get("checkPointData/informationByType", {type: 2})
+    //监测数据统计-水质监测点均值和峰值-tab切换模块接口数据
+    this.$get("checkPointData/avgAndTopDataByType", {type: 2})
+      .then(res => {
+        if (res) {
+          console.log(res);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    //监测数据统计-流量监测点今日数据-tab切换模块接口数据
+    this.$get("checkPointData/informationByType", {type: 3})
       .then(res => {
         if (res) {
           console.log(res);
@@ -414,6 +458,48 @@ export default {
     checkTime (time) {
       if(time < 10) return "0" + time;
       return time;
+    },
+    datatab (i) {
+      this.pointtabindex = i
+    },
+    // 易涝点水位今日数据图表
+    floodechart () {
+      //监测数据统计-易涝点水位今日数据-tab切换模块接口数据
+      this.$get("checkPointData/informationByType", {type: 1})
+        .then(res => {
+          if (res) {
+            console.log(res);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 水质监测点水位今日数据图表
+    waterechart () {
+      //监测数据统计-水质监测点今日数据-tab切换模块接口数据
+      this.$get("checkPointData/informationByType", {type: 2})
+        .then(res => {
+          if (res) {
+            console.log(res);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 流量监测点水位今日数据图表
+    flowechart () {
+      //监测数据统计-流量监测点今日数据-tab切换模块接口数据
+      this.$get("checkPointData/informationByType", {type: 3})
+        .then(res => {
+          if (res) {
+            console.log(res);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -456,7 +542,7 @@ export default {
 .tabs{
   position: relative;
   padding: 15px 5px;
-  height: 458px;
+  height: 402px;
 }
 .tabs .times{
   position: absolute;
@@ -469,6 +555,33 @@ export default {
   color: #323232;
   line-height: 14px;
 }
+.L-tabtitle{
+   display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+.L-tabtitle li{
+  padding: 0 15px;
+  line-height: 30px;
+  height: 30px;
+  background-color: #ffffff;
+  border: solid 1px #e0e0e0;
+  border-right: 0;
+  letter-spacing: 1px;
+  color: #888888;
+  cursor: pointer;
+}
+.L-tabtitle li:nth-of-type(1){
+  border-radius: 3px 0 0 3px;
+}
+.L-tabtitle li:nth-last-of-type(1){
+  border-radius: 0 3px 3px 0;
+  border-right: solid 1px #e0e0e0;
+}
+.L-tabtitle .active{
+  background-color: #0095ff;
+  color: #ffffff;
+}
 .echarts-title{
   font-size: 18px;
   font-weight: normal;
@@ -477,6 +590,7 @@ export default {
   color: #323232;
   line-height: 18px;
   padding-top: 5px;
+  text-align: center;
 }
 .data-title{
   font-size: 18px;
@@ -487,6 +601,7 @@ export default {
   line-height: 18px;
   padding-top: 40px;
   padding-bottom: 10px;
+  text-align: center;
 }
 div{}
 </style>

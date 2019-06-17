@@ -12,7 +12,7 @@
           <a-input
                   v-decorator="[
           'name',
-          {rules: [{ required: true, message: 'Please input your username!' }]}
+          {rules: [{ required: true, message: 'Please input your name!' }]}
         ]"
                   placeholder="请输入单位名称"
                   style="width: 260px"
@@ -23,10 +23,13 @@
         <a-form-item
                 label="单位简称"
                 style="width: 265px"
+                :validate-status="abbreviationError() ? 'error' : ''"
+                :help="abbreviationError() || ''"
         >
           <a-input
                   v-decorator="[
-          'abbreviation'
+          'abbreviation',
+          {rules: [{ required: true, message: 'Please input!' }]}
         ]"
                   placeholder="请输入单位简称"
                   style="width: 145px"
@@ -37,13 +40,15 @@
 
         <a-form-item
                 label="单位类型"
+                :validate-status="typeError() ? 'error' : ''"
+                :help="typeError() || ''"
         >
           <a-select
                   v-decorator="[
-          'type'
+          'type',
+          {rules: [{ required: true, message: 'Please select!' }]}
         ]"
                   placeholder="请选择单位类型"
-                  :allowClear='true'
                   style="width: 145px"
           >
             <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
@@ -169,7 +174,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      // this.form.validateFields();
+      this.form.validateFields();
     });
     this.getlist()
   },
@@ -178,14 +183,22 @@ export default {
       const { getFieldError, isFieldTouched } = this.form;
       return isFieldTouched('name') && getFieldError('name');
     },
+    abbreviationError () {
+      const { getFieldError, isFieldTouched } = this.form;
+      return isFieldTouched('abbreviation') && getFieldError('abbreviation');
+    },
+    typeError () {
+      const { getFieldError, isFieldTouched } = this.form;
+      return isFieldTouched('type') && getFieldError('type');
+    },
     // 添加单位请求
     handleSubmit  (e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          var { names, abbreviation, types } = values
-          this.$post("department/create", {name: names,abbreviation:abbreviation,type:types})
+          var { name, abbreviation, type } = values
+          this.$post("department/create", {name: name,abbreviation:abbreviation,type:type})
             .then(res => {
               if (res) {
                 console.log(res);
