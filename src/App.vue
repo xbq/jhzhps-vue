@@ -28,6 +28,9 @@ ul{
   padding: 0;
   margin: 0;
 }
+button{
+  border-radius: 3px!important;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

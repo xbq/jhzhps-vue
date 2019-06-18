@@ -1,14 +1,18 @@
 <template>
   <div class="app-container">
-    我是报警设置
+    <Leditcard></Leditcard>
   </div>
 </template>
 
 <script>
+import Leditcard from './components/L-editcard'
 export default {
   data() {
     return {
     }
+  },
+  components: {
+    Leditcard
   },
   filters: {
    
