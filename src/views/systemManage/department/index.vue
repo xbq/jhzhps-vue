@@ -243,6 +243,9 @@ export default {
     },
     // 确认修改
     handleOk () {
+      if (isNaN(this.editinfo.type)) {
+        this.editinfo.type = Number(this.editinfo.typeId)
+      }
       this.$post("department/updateById", this.editinfo)
         .then(res => {
           if (res) {
