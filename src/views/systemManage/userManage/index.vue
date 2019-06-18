@@ -174,8 +174,49 @@
 			</div>
 		</div>
 		<div id="data-box">
-			<page-header titles = "数据列表"></page-header>
-			<query-table :queryinputname = "queryinputname" :queryselectname = "queryselectname"></query-table>
+			<page-header titles="数据列表"></page-header>
+			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname">
+
+			</query-table>
+			<a-table :columns="columns" size="small" :style="{wordBreak: 'break-all'}" :dataSource="data" :pagination="pagination"
+			 :loading="loading" :scroll="{ y: 'calc(100vh - 440px)'}">
+				<template slot="operation" slot-scope="text, record, index">
+					<div class='editable-row-operations'>
+						<a @click="edit(record.id)">编辑</a>
+						<a style="padding: 0 6px;color: #e6e6e6;">|</a>
+						<a @click="deleted(record.id)">删除</a>
+					</div>
+				</template>
+			</a-table>
+			<a-modal
+			        title="信息编辑"
+			        :visible="visible"
+			        @ok="handleOk"
+			        :confirmLoading="confirmLoading"
+			        @cancel="handleCancel"
+			        :centered=true
+			>
+			  <a-form>
+			    <a-form-item label="单位名称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" >
+			      <a-input v-model="editinfo.name">
+			      </a-input>
+			    </a-form-item>
+			    <a-form-item label="单位简称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+			      <a-input  v-model="editinfo.abbreviation">
+			      </a-input>
+			    </a-form-item>
+			    <a-form-item label="单位类型" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" :style="{marginBottom: 0}">
+			      <a-select :allowClear='true'  v-model="editinfo.type">
+			        <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
+			        <a-select-option
+			                v-for="departmentType in departmentTypes"
+			                :key="departmentType.id"
+			                :value="departmentType.id"
+			        >{{departmentType.name}}</a-select-option>
+			      </a-select>
+			    </a-form-item>
+			  </a-form>
+			</a-modal>
 		</div>
 	</div>
 </template>
@@ -187,18 +228,93 @@
 			return {
 				expand: false,
 				form: this.$form.createForm(this),
-				queryinputname:[{'palcename':'用户名','name':'name'},{'palcename':'手机号码','name':'tel'}],
-				queryselectname:[{'palcename':'单位','name':'department','width':'200px'},{'palcename':'用户角色','name':'role','width':'200px'},{'palcename':'性别','name':'sex','width':'100px'}]
+				queryinputname: [{
+					'palcename': '用户名',
+					'name': 'name'
+				}, {
+					'palcename': '手机号码',
+					'name': 'tel'
+				}],
+				queryselectname: [{
+					'palcename': '性别',
+					'name': 'sex',
+					'width': '100px'
+				},{
+					'palcename': '单位',
+					'name': 'department',
+					'width': '300px'
+				}, {
+					'palcename': '用户角色',
+					'name': 'role',
+					'width': '200px'
+				}],
+				queryhrefname: [{
+					'href': 'department/queryList',
+					'data': ''
+				}, {
+					'href': 'dic/getList',
+					'data': {
+						type: '单位类型',
+						rank: 2
+					}
+				}],
+				columns: [{
+						title: '单位类型',
+						dataIndex: 'type',
+						width: 100,
+					},
+					{
+						title: '单位名称',
+						dataIndex: 'name',
+						width: 100,
+					},
+					{
+						title: '单位简称',
+						dataIndex: 'abbreviation',
+						width: 100,
+					},
+					{
+						title: '操作',
+						dataIndex: 'operation',
+						width: 100,
+						scopedSlots: {
+							customRender: 'operation'
+						},
+					}
+				], // 表格列
+				data: [], // 表格数据
+				editinfo: {}, //编辑信息
+				confirmLoading: false, // 是否加载中
+				departmentTypes:[],
+				visible: false, //企业信息编辑
+				pagination: {
+				  defaultCurrent: 1,
+				  defaultPageSize: 5,
+				  showQuickJumper: true,
+				  showSizeChanger: true,
+				  showTotal: total => `共 ${total} 条`,
+				  // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
+				  pageSizeOptions: ['5', '10', '20', '30']
+				}, // 分页配置
+				loading: false, // 表格是否加载中
 			};
 		},
 		components: {
 			'page-header': pageHeader,
-			'query-table':queryTable
+			'query-table': queryTable
 		},
 		computed: {
 			count() {
 				return this.expand ? 11 : 11;
 			},
+		},
+		mounted() {
+			 this.getlist()
+		},
+		created(){
+		    this.$get("dic/getList",{type:'单位类型',rank:2}).then(res=>{
+		        this.departmentTypes = res.data.data;
+		    })
 		},
 		methods: {
 			handleSearch(e) {
@@ -208,7 +324,56 @@
 					console.log('Received values of form: ', values);
 				});
 			},
-
+			// 获取单位列表
+			getlist () {
+			  this.$get("department/queryList")
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.data = res.data.data
+			        this.data.forEach((val) => {
+			          val.key = val.id
+			        })
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			},
+			// 修改单位数据
+			edit (id) {
+			  this.$get("department/getDetail", {id: id})
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.editinfo = res.data.data
+			        this.visible = true
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			},
+			// 确认修改
+			handleOk () {
+			  this.$post("department/updateById", this.editinfo)
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.getlist()
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			  this.visible = false
+			  console.log('ok');
+			},
+			// 取消修改
+			handleCancel () {
+			  this.visible = false
+			  console.log('cancel');
+			},
 			handleReset() {
 				this.form.resetFields();
 			},

@@ -6,8 +6,20 @@
 			</a-form-item>
 			<a-form-item v-for="(item,index) in queryselectname" v-if="queryselectname.length > 0">
 				<a-select :placeholder="item.palcename" :style="{'width':item.width}" :name="item.name">
-					<a-select-option value="角色1">
-						角色1
+					<a-select-option v-for="departmentItem in dataArr[index]"
+									:key="departmentItem.id"
+									:value="departmentItem.id"  v-if="item.name == 'sex'">
+						{{departmentItem.sex}}
+					</a-select-option>
+					<a-select-option v-for="departmentItem in dataArr[index]"
+									:key="departmentItem.id"
+									:value="departmentItem.id" v-if="item.name == 'department'">
+						{{departmentItem.name}}
+					</a-select-option>
+					<a-select-option v-for="departmentItem in dataArr[index]"
+									:key="departmentItem.id"
+									:value="departmentItem.id"  v-if="item.name == 'role'">
+						{{departmentItem.name}}
 					</a-select-option>
 				</a-select>
 			</a-form-item>
@@ -25,7 +37,7 @@
 	export default {
 		data() {
 			return {
-				departmentArr:[]
+				dataArr:[]
 			};
 		},
 		props: {
@@ -34,18 +46,25 @@
 			},
 			queryselectname: {
 				type: Array
+			},
+			queryhrefname:{
+				type:Array
 			}
 		},
 		mounted() {
-			console.log(this.queryinputname);
-			console.log(this.queryselectname);
+
 		},
 		methods: {},
 		created() {
-			this.$get("department/queryList").then(res => {
-				this.departmentArr = res.data.data;
-				console.log(res);
+			var _this = this;
+			this.queryhrefname.map((item,index)=>{
+				(async function(obj){
+					await _this.$get(obj.href).then(res => {
+						_this.dataArr.push(res.data.data);
+					})
+				})(item)
 			})
+			this.dataArr.push([{'id':1,sex:'男'},{'id':2,sex:'女'}]);
 		},
 	};
 </script>
