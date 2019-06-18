@@ -97,7 +97,10 @@
     >
       <a-form>
         <a-form-item label="单位名称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" >
-          <a-input v-model="editinfo.name">
+          <a-input v-model="editinfo.name" v-decorator="[
+          'type',
+          {rules: [{ required: true, message: 'Please select!' }]}
+        ]">
           </a-input>
         </a-form-item>
         <a-form-item label="单位简称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
@@ -105,7 +108,7 @@
           </a-input>
         </a-form-item>
         <a-form-item label="单位类型" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" :style="{marginBottom: 0}">
-          <a-select :allowClear='true'  v-model="editinfo.type">
+          <a-select  v-model="editinfo.type">
             <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
             <a-select-option
                     v-for="departmentType in departmentTypes"
@@ -243,6 +246,15 @@ export default {
     },
     // 确认修改
     handleOk () {
+      if (this.editinfo.name === '') {
+        console.log(this.message);
+        this.$message.warning('单位名称不能为空', 2)
+        return
+      }
+      if (this.editinfo.abbreviation === '') {
+        this.$message.warning('单位简称不能为空', 2);
+        return
+      }
       if (isNaN(this.editinfo.type)) {
         this.editinfo.type = Number(this.editinfo.typeId)
       }
@@ -257,7 +269,7 @@ export default {
           console.log(err);
         });
       this.visible = false
-      console.log('ok');
+      this.$message.success('编辑成功',2);
     },
     // 取消修改
     handleCancel () {
