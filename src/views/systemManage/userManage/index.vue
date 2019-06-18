@@ -174,8 +174,20 @@
 			</div>
 		</div>
 		<div id="data-box">
-			<page-header titles = "数据列表"></page-header>
-			<query-table :queryinputname = "queryinputname" :queryselectname = "queryselectname"></query-table>
+			<page-header titles="数据列表"></page-header>
+			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname">
+
+			</query-table>
+			<a-table :columns="columns" size="small" :style="{wordBreak: 'break-all'}" :dataSource="data" :pagination="pagination"
+			 :loading="loading" :scroll="{ y: 'calc(100vh - 440px)'}">
+				<template slot="operation" slot-scope="text, record, index">
+					<div class='editable-row-operations'>
+						<a @click="edit(record.id)">编辑</a>
+						<a style="padding: 0 6px;color: #e6e6e6;">|</a>
+						<a @click="deleted(record.id)">删除</a>
+					</div>
+				</template>
+			</a-table>
 		</div>
 	</div>
 </template>
@@ -187,13 +199,76 @@
 			return {
 				expand: false,
 				form: this.$form.createForm(this),
-				queryinputname:[{'palcename':'用户名','name':'name'},{'palcename':'手机号码','name':'tel'}],
-				queryselectname:[{'palcename':'单位','name':'department','width':'200px'},{'palcename':'用户角色','name':'role','width':'200px'},{'palcename':'性别','name':'sex','width':'100px'}]
+				queryinputname: [{
+					'palcename': '用户名',
+					'name': 'name'
+				}, {
+					'palcename': '手机号码',
+					'name': 'tel'
+				}],
+				queryselectname: [{
+					'palcename': '性别',
+					'name': 'sex',
+					'width': '100px'
+				},{
+					'palcename': '单位',
+					'name': 'department',
+					'width': '300px'
+				}, {
+					'palcename': '用户角色',
+					'name': 'role',
+					'width': '200px'
+				}],
+				queryhrefname: [{
+					'href': 'department/queryList',
+					'data': ''
+				}, {
+					'href': 'dic/getList',
+					'data': {
+						type: '单位类型',
+						rank: 2
+					}
+				}],
+				columns: [{
+						title: '单位类型',
+						dataIndex: 'type',
+						width: 100,
+					},
+					{
+						title: '单位名称',
+						dataIndex: 'name',
+						width: 100,
+					},
+					{
+						title: '单位简称',
+						dataIndex: 'abbreviation',
+						width: 100,
+					},
+					{
+						title: '操作',
+						dataIndex: 'operation',
+						width: 100,
+						scopedSlots: {
+							customRender: 'operation'
+						},
+					}
+				], // 表格列
+				 data: [], // 表格数据
+				pagination: {
+				  defaultCurrent: 1,
+				  defaultPageSize: 5,
+				  showQuickJumper: true,
+				  showSizeChanger: true,
+				  showTotal: total => `共 ${total} 条`,
+				  // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
+				  pageSizeOptions: ['5', '10', '20', '30']
+				}, // 分页配置
+				loading: false, // 表格是否加载中
 			};
 		},
 		components: {
 			'page-header': pageHeader,
-			'query-table':queryTable
+			'query-table': queryTable
 		},
 		computed: {
 			count() {
