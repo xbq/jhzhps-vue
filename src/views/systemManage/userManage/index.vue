@@ -9,152 +9,132 @@
 
 							<a-form-item :label="`用户名称`" v-if="i===1">
 								<a-input v-decorator="[
-			            `field-${i}`,
+			            'username',
 			            {
 			              rules: [{
 			                required: true,
-			                message: 'Input something!',
+			                message: '请输入用户名!',
 			              }],
 			            }
 			          ]"
-								 placeholder="placeholder" />
+								 placeholder="用户名" />
 							</a-form-item>
 							<a-form-item :label="`所属单位`" v-if="i===2">
 								<a-select v-decorator="[
-										`field-${i}`,
+										'department',
 										{
 										  rules: [{
 										    required: true,
-										    message: 'select something!',
+										    message: '请选择所属单位!',
 										  }],
 										}
 									]"
-								 placeholder="Select placeholder">
-									<a-select-option value="male">
-										male
-									</a-select-option>
-									<a-select-option value="female">
-										female
+								 placeholder="所属单位">
+									<a-select-option v-for="departmentType in departmentTypes"
+													:key="departmentType.id"
+													:value="departmentType.id">
+										{{departmentType.name}}
 									</a-select-option>
 								</a-select>
 							</a-form-item>
 							<a-form-item :label="`姓名`" v-if="i===3">
 								<a-input v-decorator="[
-						      `field-${i}`,
-						      {
-						        rules: [{
-						          required: true,
-						          message: 'Input something!',
-						        }],
-						      }
+						      'realName'
 						    ]"
-								 placeholder="placeholder" />
+								 placeholder="姓名" />
 							</a-form-item>
 							<a-form-item :label="`设置密码`" v-if="i===4">
 								<a-input v-decorator="[
-						      `field-${i}`,
+						      'password',
 						      {
 						        rules: [{
 						          required: true,
-						          message: 'Input something!',
+						          message: '请输入密码!'
 						        }],
+								initialValue: '123456'
 						      }
-						    ]"
-								 placeholder="placeholder" />
+						    ]" type="password"/>
 							</a-form-item>
 							<a-form-item :label="`用户角色`" v-if="i===5">
 								<a-select v-decorator="[
-										`field-${i}`,
+										'role',
 										{
 										  rules: [{
 										    required: true,
-										    message: 'select something!',
+										    message: '请选择用户角色!',
 										  }],
 										}
 									]"
-								 placeholder="Select placeholder">
-									<a-select-option value="male">
-										male
-									</a-select-option>
-									<a-select-option value="female">
-										female
+								 placeholder="选择角色">
+									<a-select-option v-for="roleType in roleTypes"
+													:key="roleType.id"
+													:value="roleType.id">
+										{{roleType.name}}
 									</a-select-option>
 								</a-select>
 							</a-form-item>
 							<a-form-item :label="`性别`" v-if="i===6">
 								<a-select v-decorator="[
-										`field-${i}`,
-										{
-										  rules: [{
-										    required: true,
-										    message: 'select something!',
-										  }],
-										}
+										'gender'
 									]"
-								 placeholder="Select placeholder">
-									<a-select-option value="male">
-										male
+								 placeholder="性别">
+									<a-select-option value="1">
+										男
 									</a-select-option>
-									<a-select-option value="female">
-										female
+									<a-select-option value="2">
+										女
 									</a-select-option>
 								</a-select>
 							</a-form-item>
 							</a-form-item>
 							<a-form-item :label="`确认密码`" v-if="i===7">
 								<a-input v-decorator="[
-						      `field-${i}`,
+						      'passwordnew',
 						      {
 						        rules: [{
 						          required: true,
-						          message: 'Input something!',
+						          message: '请确认密码!',
 						        }],
+								initialValue: '123456'
 						      }
 						    ]"
-								 placeholder="placeholder" />
+								 placeholder="确认密码" type="password"/>
 							</a-form-item>
 							</a-form-item>
 							<a-form-item :label="`联系电话`" v-if="i===8">
 								<a-input v-decorator="[
-						      `field-${i}`,
+						      'mobile',
 						      {
 						        rules: [{
 						          required: true,
-						          message: 'Input something!',
+						          message: '请输入联系电话!',
 						        }],
 						      }
 						    ]"
-								 placeholder="placeholder" />
+								 placeholder="联系电话" />
 							</a-form-item>
 							</a-form-item>
 							<a-form-item :label="`年龄`" v-if="i===9">
-								<a-input v-decorator="[
-						      `field-${i}`,
-						      {
-						        rules: [{
-						          required: true,
-						          message: 'Input something!',
-						        }],
-						      }
+								<a-input-number :min="1" :max="150" v-decorator="[
+						      'age'
 						    ]"
-								 placeholder="placeholder" />
+								 placeholder="年龄" />
 							</a-form-item>
 							<a-form-item :label="`负责业务`" v-if="i===10">
 								<a-select v-decorator="[
-										`field-${i}`,
+										'workIds',
 										{
 										  rules: [{
 										    required: true,
-										    message: 'select something!',
+										    message: '请选择负责的业务!',
 										  }],
 										}
 									]"
-								 placeholder="Select placeholder">
-									<a-select-option value="male">
-										male
-									</a-select-option>
-									<a-select-option value="female">
-										female
+								 placeholder="负责业务" mode='multiple'>
+									<a-select-option v-for="saleType in saleTypes"
+													:key="saleType.id"
+													:value="saleType.id">
+										{{saleType.name}}
 									</a-select-option>
 								</a-select>
 							</a-form-item>
@@ -178,45 +158,22 @@
 			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname">
 
 			</query-table>
-			<a-table :columns="columns" size="small" :style="{wordBreak: 'break-all'}" :dataSource="data" :pagination="pagination"
-			 :loading="loading" :scroll="{ y: 'calc(100vh - 440px)'}">
-				<template slot="operation" slot-scope="text, record, index">
-					<div class='editable-row-operations'>
-						<a @click="edit(record.id)">编辑</a>
-						<a style="padding: 0 6px;color: #e6e6e6;">|</a>
-						<a @click="deleted(record.id)">删除</a>
-					</div>
-				</template>
-			</a-table>
-			<a-modal
-			        title="信息编辑"
-			        :visible="visible"
-			        @ok="handleOk"
-			        :confirmLoading="confirmLoading"
-			        @cancel="handleCancel"
-			        :centered=true
+			<a-table :columns="columns"
+			         size="small"
+			         :style="{wordBreak: 'break-all'}"
+			         :dataSource="data"
+			         :pagination="pagination"
+			         :loading="loading"
+			         :scroll="{ y: 'calc(100vh - 420px)'}"
 			>
-			  <a-form>
-			    <a-form-item label="单位名称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" >
-			      <a-input v-model="editinfo.name">
-			      </a-input>
-			    </a-form-item>
-			    <a-form-item label="单位简称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
-			      <a-input  v-model="editinfo.abbreviation">
-			      </a-input>
-			    </a-form-item>
-			    <a-form-item label="单位类型" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" :style="{marginBottom: 0}">
-			      <a-select :allowClear='true'  v-model="editinfo.type">
-			        <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
-			        <a-select-option
-			                v-for="departmentType in departmentTypes"
-			                :key="departmentType.id"
-			                :value="departmentType.id"
-			        >{{departmentType.name}}</a-select-option>
-			      </a-select>
-			    </a-form-item>
-			  </a-form>
-			</a-modal>
+			  <template slot="operation" slot-scope="text, record, index">
+			    <div class='editable-row-operations'>
+			      <a @click="edit(record.id)">编辑</a>
+			      <a style="padding: 0 6px;color: #e6e6e6;">|</a>
+			      <a @click="deleted(record.id)">删除</a>
+			    </div>
+			  </template>
+			</a-table>
 		</div>
 	</div>
 </template>
@@ -252,26 +209,39 @@
 					'href': 'department/queryList',
 					'data': ''
 				}, {
-					'href': 'dic/getList',
-					'data': {
-						type: '单位类型',
-						rank: 2
-					}
+					'href': 'role/getList',
+					'data': ''
 				}],
 				columns: [{
-						title: '单位类型',
-						dataIndex: 'type',
+						title: '单位',
+						dataIndex: 'department',
+						width: 150,
+					},{
+						title: '姓名',
+						dataIndex: 'realName',
+						width: 100,
+					},{
+						title: '用户名',
+						dataIndex: 'username',
+						width: 100,
+					},{
+						title: '用户角色',
+						dataIndex: 'roleName',
+						width: 100,
+					},{
+						title: '电话',
+						dataIndex: 'mobile',
 						width: 100,
 					},
 					{
-						title: '单位名称',
-						dataIndex: 'name',
-						width: 100,
+						title: '性别',
+						dataIndex: 'gender',
+						width: 50,
 					},
 					{
-						title: '单位简称',
-						dataIndex: 'abbreviation',
-						width: 100,
+						title: '年龄',
+						dataIndex: 'age',
+						width: 50,
 					},
 					{
 						title: '操作',
@@ -285,7 +255,9 @@
 				data: [], // 表格数据
 				editinfo: {}, //编辑信息
 				confirmLoading: false, // 是否加载中
-				departmentTypes:[],
+				departmentTypes:[],// 单位集合
+				roleTypes:[],// 角色集合
+				saleTypes:[],// 业务类型集合
 				visible: false, //企业信息编辑
 				pagination: {
 				  defaultCurrent: 1,
@@ -312,27 +284,49 @@
 			 this.getlist()
 		},
 		created(){
-		    this.$get("dic/getList",{type:'单位类型',rank:2}).then(res=>{
+			// 获取所有单位
+		    this.$get("department/queryList").then(res=>{
 		        this.departmentTypes = res.data.data;
 		    })
+			// 获取所有角色
+			this.$get("role/getList").then(res=>{
+			    this.roleTypes = res.data.data;
+			})
+			// 获取所有业务类型
+			this.$get("dic/getList",{'type':'任务类型管理','rank':'2'}).then(res=>{
+			    this.saleTypes = res.data.data;
+			})
 		},
 		methods: {
+			// 添加单位请求
 			handleSearch(e) {
-				e.preventDefault();
-				this.form.validateFields((error, values) => {
-					console.log('error', error);
-					console.log('Received values of form: ', values);
-				});
+			  e.preventDefault();
+			  this.form.validateFields((err, values) => {
+			    if (!err) {
+				 delete values.passwordnew;
+				 values.workIds = values.workIds.toString();
+				     console.log('Received values of form: ', values);
+					 this.$post("user/user_register",values)
+					   .then(res => {
+					     if (res) {
+					       console.log(res);
+					     }
+					   })
+					   .catch(err => {
+					     console.log(err);
+					     // return false;
+					   });
+			    }
+			  });
 			},
 			// 获取单位列表
 			getlist () {
-			  this.$get("department/queryList")
+			  this.$get("user/getList",{'limit':'1000000000'})
 			    .then(res => {
 			      if (res) {
-			        console.log(res);
 			        this.data = res.data.data
 			        this.data.forEach((val) => {
-			          val.key = val.id
+			          val.key = val.userId
 			        })
 			      }
 			    })
@@ -356,6 +350,18 @@
 			},
 			// 确认修改
 			handleOk () {
+			  if (this.editinfo.name === '') {
+			    console.log(this.message);
+			    this.$message.warning('单位名称不能为空', 2)
+			    return
+			  }
+			  if (this.editinfo.abbreviation === '') {
+			    this.$message.warning('单位简称不能为空', 2);
+			    return
+			  }
+			  if (isNaN(this.editinfo.type)) {
+			    this.editinfo.type = Number(this.editinfo.typeId)
+			  }
 			  this.$post("department/updateById", this.editinfo)
 			    .then(res => {
 			      if (res) {
@@ -367,12 +373,25 @@
 			      console.log(err);
 			    });
 			  this.visible = false
-			  console.log('ok');
+			  this.$message.success('编辑成功',2);
 			},
 			// 取消修改
 			handleCancel () {
 			  this.visible = false
 			  console.log('cancel');
+			},
+			// 删除单位信息
+			deleted (id) {
+			  this.$post("department/delete", {id: id})
+				.then(res => {
+				  if (res) {
+					console.log(res);
+					this.getlist()
+				  }
+				})
+				.catch(err => {
+				  console.log(err);
+				});
 			},
 			handleReset() {
 				this.form.resetFields();
