@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card :body-style="{padding: '0 10px',height: '160px'}">
+    <a-card :body-style="{padding: '0 10px',height: '160px',marginBottom: '15px'}">
       <h3>添加单位</h3>
       <a-form layout="inline" :form="form" class="form" @submit="handleSubmit">
         <a-form-item
@@ -68,7 +68,7 @@
         </a-form-item>
       </a-form>
     </a-card>
-    <a-card :body-style="{padding: '0 10px',height: '160px',maginTop: '15px'}">
+    <a-card :body-style="{padding: '0 10px',height: 'calc(100vh - 265px)'}">
       <h3>单位列表</h3>
       <a-table :columns="columns"
                size="small"
@@ -76,7 +76,7 @@
                :dataSource="data"
                :pagination="pagination"
                :loading="loading"
-               :scroll="{ y: 'calc(100vh - 440px)'}"
+               :scroll="{ y: 'calc(100vh - 420px)'}"
       >
         <template slot="operation" slot-scope="text, record, index">
           <div class='editable-row-operations'>
