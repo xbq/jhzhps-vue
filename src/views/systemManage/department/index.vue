@@ -70,22 +70,24 @@
     </a-card>
     <a-card :body-style="{padding: '0 10px',height: 'calc(100vh - 265px)'}">
       <h3>单位列表</h3>
-      <a-table :columns="columns"
-               size="small"
-               :style="{wordBreak: 'break-all'}"
-               :dataSource="data"
-               :pagination="pagination"
-               :loading="loading"
-               :scroll="{ y: 'calc(100vh - 420px)'}"
-      >
-        <template slot="operation" slot-scope="text, record, index">
-          <div class='editable-row-operations'>
-            <a @click="edit(record.id)">编辑</a>
-            <a style="padding: 0 6px;color: #e6e6e6;">|</a>
-            <a @click="deleted(record.id)">删除</a>
-          </div>
-        </template>
-      </a-table>
+      <div style="padding:30px 5px 15px">
+        <a-table :columns="columns"
+                 size="small"
+                 :style="{wordBreak: 'break-all'}"
+                 :dataSource="data"
+                 :pagination="pagination"
+                 :loading="loading"
+                 :scroll="{ y: 'calc(100vh - 420px)'}"
+        >
+          <template slot="operation" slot-scope="text, record, index">
+            <div class='editable-row-operations'>
+              <a @click="edit(record.id)">编辑</a>
+              <a style="padding: 0 6px;color: #e6e6e6;">|</a>
+              <a @click="deleted(record.id)">删除</a>
+            </div>
+          </template>
+        </a-table>
+      </div>
     </a-card>
     <a-modal
             title="信息编辑"
@@ -237,6 +239,7 @@ export default {
           if (res) {
             console.log(res);
             this.editinfo = res.data.data
+            this.editinfo.type = Number(this.editinfo.typeId)
             this.visible = true
           }
         })
