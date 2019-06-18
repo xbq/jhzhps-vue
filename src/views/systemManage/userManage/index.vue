@@ -188,6 +188,35 @@
 					</div>
 				</template>
 			</a-table>
+			<a-modal
+			        title="信息编辑"
+			        :visible="visible"
+			        @ok="handleOk"
+			        :confirmLoading="confirmLoading"
+			        @cancel="handleCancel"
+			        :centered=true
+			>
+			  <a-form>
+			    <a-form-item label="单位名称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" >
+			      <a-input v-model="editinfo.name">
+			      </a-input>
+			    </a-form-item>
+			    <a-form-item label="单位简称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+			      <a-input  v-model="editinfo.abbreviation">
+			      </a-input>
+			    </a-form-item>
+			    <a-form-item label="单位类型" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" :style="{marginBottom: 0}">
+			      <a-select :allowClear='true'  v-model="editinfo.type">
+			        <a-icon slot="prefix" type="lock" style="color:rgba(0,0,0,.25)"/>
+			        <a-select-option
+			                v-for="departmentType in departmentTypes"
+			                :key="departmentType.id"
+			                :value="departmentType.id"
+			        >{{departmentType.name}}</a-select-option>
+			      </a-select>
+			    </a-form-item>
+			  </a-form>
+			</a-modal>
 		</div>
 	</div>
 </template>
@@ -253,7 +282,11 @@
 						},
 					}
 				], // 表格列
-				 data: [], // 表格数据
+				data: [], // 表格数据
+				editinfo: {}, //编辑信息
+				confirmLoading: false, // 是否加载中
+				departmentTypes:[],
+				visible: false, //企业信息编辑
 				pagination: {
 				  defaultCurrent: 1,
 				  defaultPageSize: 5,
@@ -275,6 +308,14 @@
 				return this.expand ? 11 : 11;
 			},
 		},
+		mounted() {
+			 this.getlist()
+		},
+		created(){
+		    this.$get("dic/getList",{type:'单位类型',rank:2}).then(res=>{
+		        this.departmentTypes = res.data.data;
+		    })
+		},
 		methods: {
 			handleSearch(e) {
 				e.preventDefault();
@@ -283,7 +324,56 @@
 					console.log('Received values of form: ', values);
 				});
 			},
-
+			// 获取单位列表
+			getlist () {
+			  this.$get("department/queryList")
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.data = res.data.data
+			        this.data.forEach((val) => {
+			          val.key = val.id
+			        })
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			},
+			// 修改单位数据
+			edit (id) {
+			  this.$get("department/getDetail", {id: id})
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.editinfo = res.data.data
+			        this.visible = true
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			},
+			// 确认修改
+			handleOk () {
+			  this.$post("department/updateById", this.editinfo)
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.getlist()
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
+			  this.visible = false
+			  console.log('ok');
+			},
+			// 取消修改
+			handleCancel () {
+			  this.visible = false
+			  console.log('cancel');
+			},
 			handleReset() {
 				this.form.resetFields();
 			},
