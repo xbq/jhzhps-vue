@@ -1,8 +1,9 @@
 <template>
   <a-locale-provider :locale="zhCN">
     <div id="app">
-      <!-- <img src="./assets/logo.png"> -->
-      <router-view/>
+      <div class="bg">
+         <router-view/>
+      </div>
     </div>
   </a-locale-provider>
 </template>
@@ -35,8 +36,18 @@ button{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  height: 100%;
+	height: 100%;
+	background:  #0570CB;
+}
+.bg{
+	position: absolute;
+	color: #2c3e50;
+	width: 1200px;
+	height: 567px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-60%);
+	background: url(assets/img/login-bg.png) center center no-repeat;
 }
 /*卡片内样式*/
 h3 {

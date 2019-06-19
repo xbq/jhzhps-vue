@@ -1,63 +1,61 @@
 <template>
-  <div>
+  <div id="loginbox">
+    <h2>登录账号</h2>
     <a-form
-            id="components-form-demo-normal-login"
-            :form="form"
-            class="login-form"
-            @submit="handleSubmit"
+      id="components-form-demo-normal-login"
+      :form="form"
+      class="login-form"
+      @submit="handleSubmit"
     >
       <a-form-item>
         <a-input
-                v-decorator="[
-          'username',
+          v-decorator="[
+          '请输入用户名',
           { rules: [{ required: true, message: 'Please input your username!' }] }
         ]"
-                placeholder="username"
-                name="username"
+          placeholder="请输入用户名"
+          name="username"
         >
           <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
         </a-input>
       </a-form-item>
       <a-form-item>
         <a-input
-                v-decorator="[
-          'password',
+          v-decorator="[
+          '请输入密码',
           { rules: [{ required: true, message: 'Please input your Password!' }] }
         ]"
-                type="password"
-                placeholder="password"
-                name="password"
+          type="password"
+          placeholder="请输入密码"
+          name="password"
         >
           <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
         </a-input>
       </a-form-item>
       <a-form-item>
         <a-checkbox
-                v-decorator="[
+          v-decorator="[
           'remember',
           {
             valuePropName: 'checked',
             initialValue: true,
           }
         ]"
-                name="remember"
-        >Remember me</a-checkbox>
-        <a class="login-form-forgot" href>Forgot password</a>
-        <a-button type="primary" html-type="submit" class="login-form-button">Log in</a-button>Or
-        <a href>register now!</a>
+          name="remember"
+        >记住密码</a-checkbox>
+        <a class="login-form-forgot" href>忘记密码?</a>
+        <a-button type="primary" html-type="submit" class="login-form-button">登录</a-button>
       </a-form-item>
     </a-form>
   </div>
 </template>
 
 <script>
- import { savelocalStorageItem } from "../../utils/common"
+import { savelocalStorageItem } from "../../utils/common";
 export default {
-  name:'login',
-  data(){
-    return {
-
-    }
+  name: "login",
+  data() {
+    return {};
   },
   beforeCreate() {
     this.form = this.$form.createForm(this);
@@ -78,7 +76,11 @@ export default {
         if (!err) {
           console.log("Received values of form: ", values);
           var { username, password } = values;
-          this.$post("user/user_login", { username:username, password:password,logintype:'web' })
+          this.$post("user/user_login", {
+            username: username,
+            password: password,
+            logintype: "web"
+          })
             .then(res => {
               if (res) {
                 var token = res.data.data.token;
@@ -96,7 +98,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped lang="scss">
 #components-form-demo-normal-login .login-form {
   max-width: 300px;
 }
@@ -105,6 +107,36 @@ export default {
 }
 #components-form-demo-normal-login .login-form-button {
   width: 100%;
+}
+#loginbox {
+  width: 350px;
+  height: 403px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 4px 0px rgba(0, 64, 126, 0.3);
+  border-radius: 5px;
+  position: absolute;
+  top: 55px;
+  right: 0;
+  & h2 {
+    font-size: 24px;
+    color: #323232;
+    font-family: FZLTZHUNHK--GBK1-0;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 38px;
+    margin: 30px 0;
+  }
+  & .ant-form-item {
+    width: 310px;
+    margin-left: 20px;
+  }
+  & .ant-btn {
+    height: 50px;
+  }
+  & .ant-input {
+    height: 50px;
+  }
 }
 </style>
 
