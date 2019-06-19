@@ -2,6 +2,11 @@
   <a-locale-provider :locale="zhCN">
     <div id="app">
       <div class="bg">
+        <div class="login-footer">
+          <div class="footer-left">版权所有：©2018 金华市市政管理处</div>
+          <div class="footer-right">联系电话：0572-8889590</div>
+          <div class="footer-right" style="margin-right:50px">技术支持：浙江中海达空间信息技术有限公司</div>
+        </div>
          <router-view/>
       </div>
     </div>
@@ -20,7 +25,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 body{
   margin:0px;
 }
@@ -48,6 +53,23 @@ button{
 	left: 50%;
 	transform: translate(-50%,-60%);
 	background: url(assets/img/login-bg.png) center center no-repeat;
+  .login-footer{
+    position: absolute;
+    width: 100%;
+    border-top:1px solid #fff;
+    overflow: hidden;
+    bottom: -60px;
+    .footer-left{
+      float: left;
+    }
+    .footer-right{
+      float:right;
+    }
+    div{
+      padding-top:25px;
+      color: #ddecfe;
+    }
+  }
 }
 /*卡片内样式*/
 h3 {
