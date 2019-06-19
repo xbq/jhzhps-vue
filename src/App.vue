@@ -37,33 +37,6 @@ button{
 	height: 100%;
 	background:  #0570CB;
 }
-.login-bg{
-	position: absolute;
-	color: #2c3e50;
-	width: 1200px;
-	height: 567px;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-60%);
-	background: url(assets/img/login-bg.png) center center no-repeat;
-  .login-footer{
-    position: absolute;
-    width: 100%;
-    border-top:1px solid #fff;
-    overflow: hidden;
-    bottom: -60px;
-    .footer-left{
-      float: left;
-    }
-    .footer-right{
-      float:right;
-    }
-    div{
-      padding-top:25px;
-      color: #ddecfe;
-    }
-  }
-}
 /*卡片内样式*/
 h3 {
   height: 38px;

@@ -59,7 +59,6 @@
 
 <script>
 import { savelocalStorageItem } from "../../utils/common";
-import loginImg from '@/assets/img/login-bg.png';
 export default {
   name: "login",
   data() {
@@ -116,6 +115,33 @@ export default {
 }
 #components-form-demo-normal-login .login-form-button {
   width: 100%;
+}
+.login-bg{
+	position: absolute;
+	color: #2c3e50;
+	width: 1200px;
+	height: 567px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-60%);
+	background: url(../../assets/img/login-bg.png) center center no-repeat;
+  .login-footer{
+    position: absolute;
+    width: 100%;
+    border-top:1px solid #fff;
+    overflow: hidden;
+    bottom: -60px;
+    .footer-left{
+      float: left;
+    }
+    .footer-right{
+      float:right;
+    }
+    div{
+      padding-top:25px;
+      color: #ddecfe;
+    }
+  }
 }
 #loginbox {
   width: 350px;
