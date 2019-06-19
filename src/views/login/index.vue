@@ -10,7 +10,7 @@
       <a-form-item>
         <a-input
           v-decorator="[
-          '请输入用户名',
+          'username',
           { rules: [{ required: true, message: 'Please input your username!' }] }
         ]"
           placeholder="请输入用户名"
@@ -22,7 +22,7 @@
       <a-form-item>
         <a-input
           v-decorator="[
-          '请输入密码',
+          'password',
           { rules: [{ required: true, message: 'Please input your Password!' }] }
         ]"
           type="password"
@@ -83,6 +83,7 @@ export default {
           })
             .then(res => {
               if (res) {
+                console.log(res);
                 var token = res.data.data.token;
                 savelocalStorageItem("access_token", token);
                 this.$router.push("/");
