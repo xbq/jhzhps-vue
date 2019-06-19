@@ -8,7 +8,7 @@ import '@/utils/global'//全局
 import './promission'//这里进行路由后台获取的模拟
 import {get,post,patch,put} from './utils/http.js'
 import echarts from 'echarts'
-import {Form,inputNumber,Input,Button,Select,Icon,Checkbox,message,Menu,Layout,Card,Table,Row,Col,LocaleProvider,Spin,Modal,Carousel} from 'ant-design-vue'
+import {Form,inputNumber,Input,Button,Select,Icon,Checkbox,message,Menu,Layout,Card,Table,Row,Col,LocaleProvider,Spin,Modal,Carousel,DatePicker} from 'ant-design-vue'
 
 Vue.use(Form);
 Vue.use(inputNumber);
