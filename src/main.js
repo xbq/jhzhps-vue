@@ -29,7 +29,11 @@ Vue.use(Spin);
 Vue.use(Modal);
 Vue.use(Carousel);
 Vue.use(DatePicker);
-
+message.config({
+  top: '50%',
+  duration: 2, //默认延时
+  maxCount: 3, //最多显示数，超出覆盖
+})
 Vue.config.devtools = true
 Vue.prototype.$get = get;
 Vue.prototype.$post = post;
@@ -37,6 +41,7 @@ Vue.prototype.$patch = patch;
 Vue.prototype.$put = put;
 Vue.prototype.$echarts = echarts
 Vue.prototype.$message = message
+
 
 Vue.config.productionTip = false
 
