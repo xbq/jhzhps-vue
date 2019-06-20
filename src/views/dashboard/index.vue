@@ -7,7 +7,7 @@
             <h3>待下发</h3>
             <a-spin :spinning="spinning[0]">
               <a-row class="mycardcont" :gutter="10">
-                <a-col :span="12" v-for="item in issuedlist">
+                <a-col :span="12" v-for="(item,index) in issuedlist"  :key="index">
                   <h6>{{item.bigLevel}}</h6>
                   <p>{{item.num}}</p>
                 </a-col>
@@ -20,7 +20,7 @@
             <h3>待审核</h3>
             <a-spin :spinning="spinning[1]">
               <a-row class="mycardcont" :gutter="10">
-                <a-col :span="12" v-for="item in auditedlist">
+                <a-col :span="12" v-for="(item,index) in auditedlist"  :key="index">
                   <h6>{{item.bigLevel}}</h6>
                   <p>{{item.num}}</p>
                 </a-col>
@@ -33,7 +33,7 @@
             <h3>最新报警信息</h3>
             <a-spin :spinning="spinning[2]">
               <a-row class="mycardcont" :gutter="10">
-                <a-col :span="12" v-for="item in errorlist">
+                <a-col :span="12" v-for="(item,index) in errorlist" :key="index">
                   <h6>{{item.type}}</h6>
                   <p>{{item.num}}</p>
                 </a-col>
@@ -46,7 +46,7 @@
         <h3>今日上报情况</h3>
           <ul class="departList">
             <a-spin :spinning="spinning[3]">
-              <li v-for="(item,index) in companylist" @click="gettable(item.departmentId,index)"
+              <li v-for="(item,index) in companylist" :key="index" @click="gettable(item.departmentId,index)"
                   :class="active === index ?'active':''">
                 <div class="left" v-if="index===0">
                   <img src="./img/first.png" alt="">
@@ -143,7 +143,7 @@ export default {
         // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
         pageSizeOptions: ['5', '10', '20', '30']
       }, // 分页配置
-      loading: true, // 表格是否加载中
+      loading: false, // 表格是否加载中
     }
   },
   filters: {},
@@ -204,7 +204,7 @@ export default {
     this.$get("task/sta/groupByDepartment", {})
       .then(res => {
         if (res) {
-          // console.log(res);
+          console.log(res);
           this.companylist = res.data.data
           this.spinning[3] = false
           if (this.companylist.length > 0) {

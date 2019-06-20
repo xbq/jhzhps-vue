@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <a-card class="waterpoint" :body-style="{padding: '0 10px'}">
+    <a-card class="waterpoint" :body-style="{padding: '0 10px',height: 'calc(100% - 83px)',overflow: 'hidden'}">
       <h3>水质监测点-报警设置</h3>
-      <a-spin :spinning='spinning[0]'>
+      <a-spin :spinning='spinning[0]' class="L-spin">
         <ul>
           <li v-for="(item,index) in waterlist" @click="getwaterdata(item.id)"  :key="item.id" :class="active===index?'active':''">
             <div class="num">{{index+1}}</div>
@@ -18,26 +18,37 @@
           </li>
         </ul>
       </a-spin>
+      <div class="waterpointbottom">
+        <div class="newtime">
+          当前时间: {{newtime}}
+        </div>
+        <div class="refresh" @click="refresh">
+          刷新
+          <a-icon type="reload" />
+        </div>
+      </div>
     </a-card>
     <div>
-      <a-card class="newwaterdate" :body-style="{padding: '0 10px'}">
-        <h3>最新水位数据</h3>
-        <ul>
-          <li v-for="(item,index) in newwaterdata" :key="index">
-            <div>
-              <div>{{item.DATA_TYPE}}</div>
-              <p>{{item.RECORD_TIME.substring(5,16).replace('-','/')}}</p>
-            </div>
-            <div>{{item.DATA_VALUE.toFixed(2)}}<span>{{item.UNIT}}</span></div>
-          </li>
-        </ul>
-      </a-card>
-      <a-card class="historywaterdate" :body-style="{padding: '0 10px'}">
-        <h3>历史水位数据</h3>
-      </a-card>
-      <a-card class="waterdatelist" :body-style="{padding: '0 10px'}">
-        <h3>数据列表</h3>
-      </a-card>
+      <div>
+        <a-card class="newwaterdate" :body-style="{padding: '0 10px'}">
+          <h3>最新水质数据</h3>
+          <ul>
+            <li v-for="(item,index) in newwaterdata" :key="index">
+              <div>
+                <div>{{item.DATA_TYPE}}</div>
+                <p>{{item.RECORD_TIME.substring(5,16).replace('-','/')}}</p>
+              </div>
+              <div>{{item.DATA_VALUE.toFixed(2)}}<span>{{item.UNIT}}</span></div>
+            </li>
+          </ul>
+        </a-card>
+        <a-card class="historywaterdate" :body-style="{padding: '0 10px'}">
+          <h3>24小时水质曲线</h3>
+        </a-card>
+        <a-card class="waterdatelist" :body-style="{padding: '0 10px'}">
+          <h3>数据列表</h3>
+        </a-card>
+      </div>
     </div>
   </div>
 </template>
@@ -46,6 +57,7 @@
 export default {
   data() {
     return {
+      newtime: '', // 当前时间
       active: 0, // 选中的监测点位
       waterlist: [], // 水质监测点位
       spinning: [false], // 是否加载中
@@ -53,27 +65,66 @@ export default {
     }
   },
   created() {
-    // 获取水质监测点位
-    this.$get("checkPoint/get", {limit: 1,type: 2})
-      .then(res => {
-        if (res) {
-          console.log(res);
-          this.waterlist = res.data.data
-          this.getwaterdata(this.waterlist[0].id)
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // 获取当前时间
+    let date = new Date()
+    this.newtime = this.checkTime(date.getHours()) + ":" + this.checkTime(date.getMinutes()) + ":" + this.checkTime(date.getSeconds())
+    this.times = setInterval(() => {
+      let date = new Date()
+      this.newtime = this.checkTime(date.getHours()) + ":" + this.checkTime(date.getMinutes()) + ":" + this.checkTime(date.getSeconds())
+    },1000)
+    this.refresh (false)
   },
   methods: {
-   // 获取最新水质数据
-    getwaterdata(id) {
-      this.$get("checkPointData/getLastDataById", {checkpointId: id})
+    //校验时间,小于10前面加0
+    checkTime (time) {
+      if(time < 10) return "0" + time;
+      return time;
+    },
+    // 刷新水质监测点
+    refresh (boo) {
+      this.spinning[0] = true;
+      // 获取水质监测点位
+      this.$get("checkPoint/get", {limit: 1,type: 2})
         .then(res => {
           if (res) {
             console.log(res);
+            this.waterlist = res.data.data;
+            // for (let i = 0; i < 10; i++) {
+            //   this.waterlist.push(this.waterlist[0])
+            // }
+            this.getwaterdata(this.waterlist[0].id);
+            this.spinning[0] = false;
+            if (boo) {
+              this.$message.success('刷新成功', 1)
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          this.spinning[0] = false;
+          if (boo) {
+            this.$message.error('刷新失败，请稍后再试', 1)
+          }
+        });
+    },
+    // 获取不同监测点水质信息
+    getwaterdata(id) {
+      // 获取最新水质数据
+      this.$get("checkPointData/getLastDataById", {checkpointId: id})
+        .then(res => {
+          if (res) {
+            // console.log(res);
             this.newwaterdata = res.data.data
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      // 获取最新水质数据
+      this.$get("checkPointData/queryListForToday", {checkpointId: id,dataType: '流量'})
+        .then(res => {
+          if (res) {
+            console.log(res);
           }
         })
         .catch(err => {
@@ -91,7 +142,16 @@ export default {
     width: 406px;
     height: 100%;
     margin-right: 15px;
+    position: relative;
+    .L-spin{
+      height: 100%;
+      overflow: auto;
+      width: 150%;
+      padding-right: 50%;
+    }
     ul{
+      padding: 20px 5px;
+      height: 100%;
       .active{
         border: solid 1px #9bd5ff;
         .num{
@@ -115,6 +175,7 @@ export default {
         letter-spacing: 1px;
         background-color: #f2faff;
         border: 1px dashed #e0e0e0;
+        cursor: pointer;
         .num{
           width: 20px;
           height: 20px;
@@ -160,11 +221,34 @@ export default {
         }
       }
     }
+    .waterpointbottom{
+      position: absolute;
+      bottom: 0;
+      width: 386px;
+      display: flex;
+      justify-content: space-between;
+      line-height: 12px;
+      height: 45px;
+      letter-spacing: 1px;
+      color: #888888;
+      font-size: 12px;
+      padding: 13px 5px 20px 5px;
+      .refresh{
+        color: #0095ff;
+        cursor: pointer;
+      }
+    }
   }
   .waterpoint+div{
     flex: 1;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
+    &>div{
+      height: 100%;
+      overflow: auto;
+      width: 150%;
+      padding-right: 50%;
+    }
   }
   .newwaterdate{
     margin-bottom: 15px;

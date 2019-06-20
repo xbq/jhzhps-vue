@@ -6,7 +6,7 @@
           <h3>报警情况</h3>
           <a-spin :spinning=false>
             <a-row class="mycardcont" :gutter="10">
-              <a-col :span="12" v-for="item in 4">
+              <a-col :span="12" v-for="item in 4"  :key="item">
                 <h6>qwdqdw</h6>
                 <p>{{item}}</p>
               </a-col>
@@ -19,7 +19,7 @@
           <h3>监测点统计</h3>
           <a-spin :spinning=false>
             <a-row class="mycardcont" :gutter="10">
-              <a-col :span="8" v-for="item in pointtype">
+              <a-col :span="8" v-for="(item,index) in pointtype"  :key="index">
                 <h6>{{item.type}}</h6>
                 <p>{{item.COUNT}}</p>
               </a-col>
@@ -40,7 +40,7 @@
           <h3>易涝监测点最新数据</h3>
           <a-spin :spinning=false>
             <a-row class="mycardcont mycardcont2" :gutter="10">
-              <a-col :span="8" v-for="item in floodnewdata">
+              <a-col :span="8" v-for="(item,index) in floodnewdata"  :key="index">
                 <h6 :title="item.name">{{item.name}}</h6>
                 <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
               </a-col>
@@ -86,7 +86,7 @@
           <h3>流量监测点最新数据</h3>
           <a-spin :spinning=false>
             <a-row class="mycardcont mycardcont2" :gutter="10">
-              <a-col :span="8" v-for="item in floodnewdata">
+              <a-col :span="8" v-for="(item,index) in floodnewdata"  :key="index">
                 <h6 :title="item.name">{{item.name}}</h6>
                 <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
               </a-col>
@@ -100,7 +100,7 @@
         <a-card :body-style="{padding: '0 10px'}">
           <h3>监测数据统计
             <a class="tabcircle">
-              <div v-for="i in [0,1,2]" @mouseenter="datatab(i)" :class="pointtabindex===i?'active':''"></div>
+              <div v-for="i in [0,1,2]"  :key="i" @mouseenter="datatab(i)" :class="pointtabindex===i?'active':''"></div>
             </a>
           </h3>
           <div class="tabs">
@@ -155,13 +155,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -179,13 +179,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -206,13 +206,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -230,13 +230,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -257,13 +257,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -281,13 +281,13 @@
                     <div></div>
                   </a>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
                   </div>
                   <div>
-                    <a-col :span="8" v-for="item in 3">
+                    <a-col :span="8" v-for="item in 3" :key="item">
                       <h6>qwdqdw</h6>
                       <p>{{item}}</p>
                     </a-col>
@@ -443,7 +443,7 @@ export default {
         console.log(err);
       });
     //监测数据统计-流量监测点今日数据-tab切换模块接口数据
-    this.$get("checkPointData/informationByType", {type: 3})
+    this.$get("checkPointData/avgAndTopDataByType", {type: 3})
       .then(res => {
         if (res) {
           console.log(res);
@@ -503,7 +503,7 @@ export default {
     }
   },
   beforeRouteLeave(to, from, next) {
-    clearInterval(this.timer)
+    clearInterval(this.times)
     next()
   }
 }

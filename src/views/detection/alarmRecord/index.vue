@@ -6,7 +6,7 @@
           <h3>最新报警记录</h3>
           <a-spin :spinning='spinning[0]'>
             <ul>
-              <li v-for="item in newalarms">
+              <li v-for="(item,index) in newalarms" :key="index">
                 <a-row>
                   <a-col :span="6" class="alarmtitle">
                     <h4>{{item.alarmType}}</h4>
@@ -49,31 +49,98 @@
       <div style="padding:27px 10px 29px">
         <div class="query">
           <div>
-            <a-date-picker size="large"></a-date-picker>
-            <a-select v-model="quarydata.type" size="large">
-              <a-select-option value="jack">Jack</a-select-option>
-              <a-select-option value="lucy">Lucy</a-select-option>
-              <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-range-picker size="large" allowClear  @change="onChange"></a-range-picker>
+            <a-select v-model="quarydata.checkPointId" size="large"  placeholder="全部监测点" allowClear>
+              <a-select-option v-for="item in checkpoints" :key="item.id" :value="item.id">{{item.name}}</a-select-option>
             </a-select>
-            <a-select v-model="quarydata.type" size="large">
-              <a-select-option value="jack">Jack</a-select-option>
-              <a-select-option value="lucy">Lucy</a-select-option>
-              <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-select v-model="quarydata.alarmType" placeholder="全部报警类型" size="large" allowClear>
+<!--              <a-select-option value="">全部报警类型</a-select-option>-->
+              <a-select-option value="总磷">总磷</a-select-option>
+              <a-select-option value="氨氮">氨氮</a-select-option>
+              <a-select-option value="水位超标">水位超标</a-select-option>
+              <a-select-option value="PH过小">PH过小</a-select-option>
+              <a-select-option value="COD超标">COD超标</a-select-option>
+              <a-select-option value="流量超标">流量超标</a-select-option>
+              <a-select-option value="Yiminghe">PH过大</a-select-option>
             </a-select>
-            <a-button size="large" type="primary">添加</a-button>
+            <a-button size="large" type="primary" @click="query">查询</a-button>
           </div>
           <div>
-            <a-button size="large" icon="plus-circle">添加</a-button>
+            <a-button size="large" @click="add" icon="plus-circle">添加</a-button>
             <a-button size="large" icon="upload">导出</a-button>
             <a-button size="large" icon="printer">打印</a-button>
           </div>
         </div>
         <a-table :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{ x: 1200, y: 457 }" :pagination="pagination"
                  :loading="loading">
-          <a slot="action" slot-scope="text" href="javascript:;">action</a>
+          <a slot="action" slot-scope="text" @click="edit(text.key)">查看</a>
         </a-table>
       </div>
     </a-card>
+    <a-modal
+            title="报警信息"
+            :visible="visible[0]"
+            @ok="edithandleOk"
+            :confirmLoading="confirmLoading[0]"
+            @cancel="edithandleCancel"
+            width="400px"
+            :centered=true
+    >
+      <div class="editinfo">
+        <div class="location">
+          <div>{{editdate.location}}</div>
+          <span>{{editdate.alarmTime}}</span>
+        </div>
+        <div class="alarmvalue">
+          <h6>{{editdate.alarmType}}</h6>
+          <div>{{editdate.alarmValue}}<span>{{editdate.unit}}</span></div>
+        </div>
+        <div class="status">
+          <div>处理状态：</div>
+          <ul>
+            <li :class="editdate.status==='处理中'?'active':''" @click="editdate.status='处理中'">处理中</li>
+            <li :class="editdate.status==='已处理'?'active':''" @click="editdate.status='已处理'">已处理</li>
+            <li :class="editdate.status==='已忽略'?'active':''" @click="editdate.status='已忽略'">已忽略</li>
+          </ul>
+        </div>
+        <div class="remark">
+          <div>处理状态：</div>
+          <input type="text" v-model="editdate.remark">
+        </div>
+      </div>
+    </a-modal>
+    <a-modal
+            title="添加报警数据"
+            :visible="visible[1]"
+            @ok="addhandleOk"
+            :confirmLoading="confirmLoading[1]"
+            @cancel="addhandleCancel"
+            width="400px"
+            :centered=true
+    >
+      <div class="editinfo">
+        <div class="location">
+          <div>{{editdate.location}}</div>
+          <span>{{editdate.alarmTime}}</span>
+        </div>
+        <div class="alarmvalue">
+          <h6>{{editdate.alarmType}}</h6>
+          <div>{{editdate.alarmValue}}<span>{{editdate.unit}}</span></div>
+        </div>
+        <div class="status">
+          <div>处理状态：</div>
+          <ul>
+            <li :class="editdate.status==='处理中'?'active':''" @click="editdate.status='处理中'">处理中</li>
+            <li :class="editdate.status==='已处理'?'active':''" @click="editdate.status='已处理'">已处理</li>
+            <li :class="editdate.status==='已忽略'?'active':''" @click="editdate.status='已忽略'">已忽略</li>
+          </ul>
+        </div>
+        <div class="remark">
+          <div>处理状态：</div>
+          <input type="text" v-model="editdate.remark">
+        </div>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -112,7 +179,12 @@ export default {
         pageSizeOptions: ['5', '10', '20', '30']
       }, // 分页配置
       loading: false, // 表格是否加载中
-      quarydata: {}, // 查询数据
+      checkpoints: [], //全部的监测点位
+      quarydata: {
+      }, // 查询数据
+      confirmLoading: [false, false],
+      visible: [false, false],
+      editdate: {}, // 查看编辑的数据
     }
   },
   created() {
@@ -134,10 +206,26 @@ export default {
       .catch(err => {
         console.log(err);
       });
+    // 获取全部监测点
+    this.$get("checkPoint/get", {origin: 1, used: 2})
+      .then(res => {
+        if (res) {
+          console.log(res);
+          this.checkpoints = res.data.data
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     this.refresh()
     this.getlist()
   },
   methods: {
+    // 获取查询的时间段
+    onChange (date,datestring) {
+      this.quarydata.beginTime = datestring[0]
+      this.quarydata.endTime = datestring[1]
+    },
     //绘制报警类型统计图表
     echartstype (data) {
       var echarts_type = this.$echarts.init(document.getElementById('type_gather')),
@@ -210,6 +298,7 @@ export default {
             // this.$message.success('刷新成功', 1)
           }
           this.spinning[0] = false
+          this.$message.success('刷新成功', 1)
         })
         .catch(err => {
           console.log(err);
@@ -217,11 +306,12 @@ export default {
         });
     },
     // 获取数据列表
-    getlist () {
-      this.$get("alarm/getList", {origin: 1})
+    getlist (data) {
+      this.$get("alarm/getList", {origin: 1, limit: -1,...data})
         .then(res => {
           if (res) {
             console.log(res);
+            this.data = []
             res.data.data.forEach((val) => {
               this.data.push({
                 key: val.alarmId,
@@ -240,10 +330,42 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    // 查询
+    query () {
+      this.getlist(this.quarydata)
+    },
+    edithandleOk () {
+      this.visible[0] = false
+    },
+    addhandleOk () {
+      this.visible[1] = false
+    },
+    edithandleCancel () {
+      this.visible[0] = false
+    },
+    addhandleCancel () {
+      this.visible[1] = false
+    },
+    edit (id) {
+      this.visible[0] = true;
+      this.$get("alarm/getById", {alarmId: id})
+        .then(res => {
+          if (res) {
+            this.editdate = res.data.data
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    add () {
+      this.visible[1] = true;
     }
   },
+  // 离开路由关闭定时器
   beforeRouteLeave(to, from, next) {
-    clearInterval(this.timer)
+    clearInterval(this.times)
     next()
   }
 }
@@ -345,6 +467,107 @@ p{
   &>div:nth-of-type(2){
     .ant-btn{
       margin-left: 15px;
+    }
+  }
+}
+.editinfo{
+  .location{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    div{
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: #0095ff;
+    }
+    span{
+      font-size: 12px;
+      letter-spacing: 0px;
+      color: #888888;
+    }
+  }
+  .alarmvalue{
+    background-color: #e89090;
+    border: solid 1px #ff6666;
+    box-shadow: 0px 0px 8px rgba(183,0,0,.5);
+    height: 80px;
+    padding: 12px 0;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 22px;
+    h6{
+      color: #e6d3d3;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 0;
+    }
+    div{
+      color: #b70000;
+      font-size: 28px;
+      letter-spacing: 2px;
+      span{
+        font-size: 16px;
+        color: #e6d3d3;
+        letter-spacing: 1px;
+      }
+    }
+  }
+  .status{
+    height: 38px;
+    display: flex;
+    div{
+      width: 75px;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #323232;
+      line-height: 38px;
+    }
+    ul{
+      display: flex;
+      li{
+        height: 38px;
+        padding: 0 18px;
+        background-color: #ffffff;
+        border: solid 1px #e0e0e0;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #888888;
+        line-height: 38px;
+        text-align: center;
+        cursor: pointer;
+        border-right: 0;
+      }
+      li:nth-of-type(1){
+        border-radius: 3px 0 0 3px;
+      }
+      li:nth-last-of-type(1){
+        border-radius: 0 3px 3px 0;
+        border-right: solid 1px #e0e0e0;
+      }
+      .active{
+        background-color: #0095ff;
+        border-color: #0095ff;
+        color: #fff;
+      }
+    }
+  }
+  .remark{
+    margin-top: 10px;
+    display: flex;
+    div{
+      width: 75px;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #323232;
+      line-height: 38px;
+    }
+    input{
+      flex: 1;
+      height: 38px;
+      border: solid 1px #e0e0e0;
+      padding: 0 10px;
+      outline: none;
+      line-height: 38px;
     }
   }
 }
