@@ -1,14 +1,14 @@
 <template>
 	<div class="query-box">
-		<a-form layout="inline" @submit="handleQuery">
+		<a-form layout="inline" :form="form" @submit="handleSearch">
 			<a-form-item v-for="(item,index) in queryinputname" v-if="queryinputname.length > 0">
-				<a-input :placeholder="item.palcename" :name="item.name" />
+				<a-input v-decorator="[item.name]" :placeholder="item.palcename" />
 			</a-form-item>
 			<a-form-item v-for="(item,index) in queryselectname" v-if="queryselectname.length > 0">
-				<a-select :placeholder="item.palcename" :style="{'width':item.width}" :name="item.name">
+				<a-select :placeholder="item.palcename" :style="{'width':item.width}" v-decorator="[item.name]">
 					<a-select-option v-for="departmentItem in dataArr[index]"
 									:key="departmentItem.id"
-									:value="departmentItem.id"  v-if="item.name == 'sex'">
+									:value="departmentItem.id"  v-if="item.name == 'gender'">
 						{{departmentItem.sex}}
 					</a-select-option>
 					<a-select-option v-for="departmentItem in dataArr[index]"
@@ -37,7 +37,9 @@
 	export default {
 		data() {
 			return {
-				dataArr:[]
+				form: this.$form.createForm(this),
+				dataArr:[],
+				queryData:{}
 			};
 		},
 		props: {
@@ -55,12 +57,12 @@
 
 		},
 		methods: {
-			// 查询
-			handleQuery(e) {
+			handleSearch(e) {
 			  e.preventDefault();
 			  this.form.validateFields((err, values) => {
 			    if (!err) {
-				     console.log('Received values of form: ', values);
+				 this.queryData = values;
+				 this.$emit('childFn', this.queryData);
 			    }
 			  });
 			},

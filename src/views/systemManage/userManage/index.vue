@@ -38,7 +38,7 @@
 								</a-select>
 							</a-form-item>
 							<a-form-item :label="`姓名`" v-if="i===3">
-								<a-input v-decorator="[
+								<a-input v-decorator="[ 
 						      'realName'
 						    ]"
 								 placeholder="姓名" />
@@ -155,7 +155,7 @@
 		</div>
 		<div id="data-box">
 			<page-header titles="数据列表"></page-header>
-			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname">
+			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname"  @childFn="parentFn">
 
 			</query-table>
 			<div class="table-box">
@@ -187,16 +187,18 @@
 			return {
 				expand: false,
 				form: this.$form.createForm(this),
+				querymessage:{},
+				limitdata:{'limit':'1000000000'},
 				queryinputname: [{
-					'palcename': '用户名',
-					'name': 'name'
+					'palcename': '姓名',
+					'name': 'realName'
 				}, {
 					'palcename': '手机号码',
-					'name': 'tel'
+					'name': 'mobile'
 				}],
 				queryselectname: [{
 					'palcename': '性别',
-					'name': 'sex',
+					'name': 'gender',
 					'width': '100px'
 				},{
 					'palcename': '单位',
@@ -283,7 +285,7 @@
 			},
 		},
 		mounted() {
-			 this.getlist()
+			 this.getlist(this.limitdata);
 		},
 		created(){
 			// 获取所有单位
@@ -321,9 +323,16 @@
 			    }
 			  });
 			},
-			// 获取单位列表
-			getlist () {
-			  this.$get("user/getList",{'limit':'1000000000'})
+			parentFn(payload) {
+        this.querymessage = payload;
+				this.querymessage.limit = 100000000;
+				console.log(899898);
+				console.log(this.querymessage);
+				this.getlist(this.querymessage);
+      },
+			// 获取用戶列表
+			getlist (wheredata) {
+			  this.$get("user/getList",wheredata)
 			    .then(res => {
 			      if (res) {
 			        this.data = res.data.data
@@ -368,7 +377,7 @@
 			    .then(res => {
 			      if (res) {
 			        console.log(res);
-			        this.getlist()
+			        this.getlist(this.limitdata)
 			      }
 			    })
 			    .catch(err => {
@@ -388,7 +397,7 @@
 				.then(res => {
 				  if (res) {
 					console.log(res);
-					this.getlist()
+					this.getlist(this.limitdata)
 				  }
 				})
 				.catch(err => {
