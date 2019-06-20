@@ -158,22 +158,24 @@
 			<query-table :queryinputname="queryinputname" :queryselectname="queryselectname" :queryhrefname="queryhrefname">
 
 			</query-table>
-			<a-table :columns="columns"
-			         size="small"
-			         :style="{wordBreak: 'break-all'}"
-			         :dataSource="data"
-			         :pagination="pagination"
-			         :loading="loading"
-			         :scroll="{ y: 'calc(100vh - 420px)'}"
-			>
-			  <template slot="operation" slot-scope="text, record, index">
-			    <div class='editable-row-operations'>
-			      <a @click="edit(record.id)">编辑</a>
-			      <a style="padding: 0 6px;color: #e6e6e6;">|</a>
-			      <a @click="deleted(record.id)">删除</a>
-			    </div>
-			  </template>
-			</a-table>
+			<div class="table-box">
+				<a-table :columns="columns"
+				         size="small"
+				         :style="{wordBreak: 'break-all'}"
+				         :dataSource="data"
+				         :pagination="pagination"
+				         :loading="loading"
+				         :scroll="{ y: 'calc(100vh - 420px)'}"
+				>
+				  <template slot="operation" slot-scope="text, record, index">
+				    <div class='editable-row-operations'>
+				      <a @click="edit(record.id)">编辑</a>
+				      <a style="padding: 0 6px;color: #e6e6e6;">|</a>
+				      <a @click="deleted(record.id)">删除</a>
+				    </div>
+				  </template>
+				</a-table>
+			</div>
 		</div>
 	</div>
 </template>
@@ -419,5 +421,11 @@
 
 	#components-form-demo-advanced-search .ant-form {
 		max-width: none;
+	}
+	.table-box{
+		width: calc(100% - 40px);
+		margin-left: 20px;
+		height:300px;
+		overflow: auto;
 	}
 </style>
