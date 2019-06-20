@@ -1,6 +1,6 @@
 <template>
 	<div class="query-box">
-		<a-form layout="inline">
+		<a-form layout="inline" @submit="handleQuery">
 			<a-form-item v-for="(item,index) in queryinputname" v-if="queryinputname.length > 0">
 				<a-input :placeholder="item.palcename" :name="item.name" />
 			</a-form-item>
@@ -54,7 +54,17 @@
 		mounted() {
 
 		},
-		methods: {},
+		methods: {
+			// 查询
+			handleQuery(e) {
+			  e.preventDefault();
+			  this.form.validateFields((err, values) => {
+			    if (!err) {
+				     console.log('Received values of form: ', values);
+			    }
+			  });
+			},
+		},
 		created() {
 			var _this = this;
 			this.queryhrefname.map((item,index)=>{
