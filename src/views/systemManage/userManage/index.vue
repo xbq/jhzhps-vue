@@ -457,6 +457,9 @@
 				console.log('点击确定获取到需要提交的信息');
         this.editinfo.workIds = this.editinfo.workIds.join()
 				console.log(this.editinfo);
+        if(isNaN(this.editinfo.department)){
+          this.editinfo.department = Number(this.editinfo.departmentId)
+        }
 			  this.$post("user/update", this.editinfo)
 			    .then(res => {
 			      if (res) {
