@@ -169,12 +169,96 @@
 				>
 				  <template slot="operation" slot-scope="text, record, index">
 				    <div class='editable-row-operations'>
-				      <a @click="edit(record.id)">编辑</a>
+				      <a @click="edit(record.userId)">编辑</a>
 				      <a style="padding: 0 6px;color: #e6e6e6;">|</a>
-				      <a @click="deleted(record.id)">删除</a>
+				      <a @click="deleted(record.userId)">删除</a>
 				    </div>
 				  </template>
 				</a-table>
+				<a-modal
+				        title="信息编辑"
+				        :visible="visible"
+				        @ok="handleOk"
+				        :confirmLoading="confirmLoading"
+				        @cancel="handleCancel"
+				        :centered=true
+				>
+				  <a-form>
+				    <a-form-item label="用戶名" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+				      <a-input  v-model="editinfo.username">
+				      </a-input>
+				    </a-form-item>
+				    <a-form-item label="所属单位" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}" >
+				      <a-select  v-model="editinfo.department">
+				        <a-select-option
+				                v-for="departmentType in departmentTypes"
+				                :key="departmentType.id"
+				                :value="departmentType.id"
+				        >{{departmentType.name}}</a-select-option>
+				      </a-select>
+				    </a-form-item>
+						<a-form-item label="`负责业务`" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+							<a-select  v-model="editinfo.workNames"
+							     v-decorator="[
+									'workIds',
+									{
+									  rules: [{
+									    required: true,
+									    message: '请选择负责的业务!',
+									  }],
+									}
+								]"
+							 placeholder="负责业务" mode='multiple'>
+								<a-select-option v-for="saleType in saleTypes"
+												:key="saleType.id"
+												:value="saleType.id">
+									{{saleType.name}}
+								</a-select-option>
+							</a-select>
+						</a-form-item>
+						<a-form-item :label="`用户角色`" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+							<a-select  v-model="editinfo.roleName" placeholder="选择角色">
+								<a-select-option v-for="roleType in roleTypes"
+												:key="roleType.id"
+												:value="roleType.id">
+									{{roleType.name}}
+								</a-select-option>
+							</a-select>
+						</a-form-item>
+						<a-form-item label="联系电话" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+						  <a-input  v-model="editinfo.mobile">
+						  </a-input>
+						</a-form-item>
+						<a-form-item label="姓名" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+						  <a-input  v-model="editinfo.realName">
+						  </a-input>
+						</a-form-item>
+						<a-form-item :label="`性别`" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+							<a-select  v-model="editinfo.gender"
+							  v-decorator="[
+									'role',
+									{
+									  rules: [{
+									    required: true,
+									    message: '请选择性别!',
+									  }],
+									}
+								]"
+							 placeholder="选择性别">
+								<a-select-option value="1">
+									男
+								</a-select-option>
+								<a-select-option value="2">
+									女
+								</a-select-option>
+							</a-select>
+						</a-form-item>
+						<a-form-item label="年龄" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
+						  <a-input  v-model="editinfo.age">
+						  </a-input>
+						</a-form-item>
+				  </a-form>
+				</a-modal>
 			</div>
 		</div>
 	</div>
@@ -302,7 +386,7 @@
 			})
 		},
 		methods: {
-			// 添加单位请求
+			// 添加用户
 			handleSearch(e) {
 			  e.preventDefault();
 			  this.form.validateFields((err, values) => {
@@ -326,8 +410,6 @@
 			parentFn(payload) {
         this.querymessage = payload;
 				this.querymessage.limit = 100000000;
-				console.log(899898);
-				console.log(this.querymessage);
 				this.getlist(this.querymessage);
       },
 			// 获取用戶列表
@@ -345,35 +427,24 @@
 			      console.log(err);
 			    });
 			},
-			// 修改单位数据
+			// 获取用户信息详情
 			edit (id) {
-			  this.$get("department/getDetail", {id: id})
+			  this.$get("user/getById", {userId: id})
 			    .then(res => {
 			      if (res) {
-			        console.log(res);
-			        this.editinfo = res.data.data
-			        this.visible = true
+			        this.editinfo = res.data.data;
+			        this.visible = true;
 			      }
 			    })
 			    .catch(err => {
 			      console.log(err);
 			    });
 			},
-			// 确认修改
+			// 确认修改用户信息
 			handleOk () {
-			  if (this.editinfo.name === '') {
-			    console.log(this.message);
-			    this.$message.warning('单位名称不能为空', 2)
-			    return
-			  }
-			  if (this.editinfo.abbreviation === '') {
-			    this.$message.warning('单位简称不能为空', 2);
-			    return
-			  }
-			  if (isNaN(this.editinfo.type)) {
-			    this.editinfo.type = Number(this.editinfo.typeId)
-			  }
-			  this.$post("department/updateById", this.editinfo)
+				console.log('点击确定获取到需要提交的信息');
+				console.log(this.editinfo);
+			  this.$post("user/update", this.editinfo)
 			    .then(res => {
 			      if (res) {
 			        console.log(res);
@@ -391,12 +462,13 @@
 			  this.visible = false
 			  console.log('cancel');
 			},
-			// 删除单位信息
+			// 删除用戶信息
 			deleted (id) {
-			  this.$post("department/delete", {id: id})
+			  this.$get("user/del", {userId: id})
 				.then(res => {
 				  if (res) {
 					console.log(res);
+					this.$message.success('删除成功',2);
 					this.getlist(this.limitdata)
 				  }
 				})
