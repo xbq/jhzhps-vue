@@ -382,7 +382,7 @@
 			// 获取所有单位
 		    this.$get("department/queryList").then(res=>{
 		        this.departmentTypes = res.data.data;
-		    })
+        })
 			// 获取所有角色
 			this.$get("role/getList").then(res=>{
 			    this.roleTypes = res.data.data;
@@ -441,7 +441,12 @@
 			      if (res) {
               console.log(res);
               this.editinfo = res.data.data;
-              this.editinfo.department = Number(this.editinfo.departmentId)
+              for (let i = 0; i < this.departmentTypes.length; i++) {
+                if(Number(this.editinfo.departmentId)===this.departmentTypes[i].id){
+                  this.editinfo.department = Number(this.editinfo.departmentId)
+                  break
+                }
+              }
               if(this.editinfo.workIds != null){
                 this.editinfo.workIds = this.editinfo.workIds.split(',')
               }else {
@@ -459,6 +464,9 @@
 				console.log('点击确定获取到需要提交的信息');
         this.editinfo.workIds = this.editinfo.workIds.join()
 				console.log(this.editinfo);
+        if(isNaN(this.editinfo.department)){
+          this.editinfo.department = Number(this.editinfo.departmentId)
+        }
 			  this.$post("user/update", this.editinfo)
 			    .then(res => {
 			      if (res) {
