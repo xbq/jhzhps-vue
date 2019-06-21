@@ -115,31 +115,115 @@
             @ok="addhandleOk"
             :confirmLoading="confirmLoading[1]"
             @cancel="addhandleCancel"
-            width="400px"
+            width="790px"
             :centered=true
     >
-      <div class="editinfo">
-        <div class="location">
-          <div>{{editdate.location}}</div>
-          <span>{{editdate.alarmTime}}</span>
-        </div>
-        <div class="alarmvalue">
-          <h6>{{editdate.alarmType}}</h6>
-          <div>{{editdate.alarmValue}}<span>{{editdate.unit}}</span></div>
-        </div>
-        <div class="status">
-          <div>处理状态：</div>
-          <ul>
-            <li :class="editdate.status==='处理中'?'active':''" @click="editdate.status='处理中'">处理中</li>
-            <li :class="editdate.status==='已处理'?'active':''" @click="editdate.status='已处理'">已处理</li>
-            <li :class="editdate.status==='已忽略'?'active':''" @click="editdate.status='已忽略'">已忽略</li>
-          </ul>
-        </div>
-        <div class="remark">
-          <div>处理状态：</div>
-          <input type="text" v-model="editdate.remark">
-        </div>
-      </div>
+      <a-form
+              :form="form"
+      >
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item
+                    label="时间"
+                    :labelCol="{ span: 5 }"
+                    :wrapperCol="{ span: 16, offset: 2 }"
+            >
+              <a-date-picker show-time
+                             format="YYYY-MM-DD HH:mm:ss"
+                             :style="{width: '100%'}"
+                             v-decorator="[
+                         'alarmTime',
+                         {rules: [{ required: true, message: 'Please input your note!' }]}
+                         ]"></a-date-picker>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+                    label="监测点"
+                    :labelCol="{ span: 5 }"
+                    :wrapperCol="{ span: 16, offset: 2 }"
+            >
+              <a-select
+                      v-decorator="[
+          'checkPointId',
+          {rules: [{ required: true, message: 'Please select your gender!' }]}
+        ]"
+                      placeholder="请选择监测点"
+                      @change="getalarmtype"
+              >
+                <a-select-option v-for="item in checkpoints" :type="item.type" :key="item.id" :value="item.id">{{item.name}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+                    label="报警类型"
+                    :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 16, offset: 2 }"
+            >
+              <a-select
+                      v-decorator="[
+          'alarmType',
+          {rules: [{ required: true, message: 'Please select your gender!' }]}
+        ]"
+                      placeholder="请选择报警类型"
+              >
+                <a-select-option v-for="item in checkpointtypes" :key="item.id" :value="item.alarmType">{{item.alarmType}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+                    label="数据值"
+                    :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 16, offset: 2 }"
+            >
+              <a-input
+                      v-decorator="[
+          'dataValue',
+          {rules: [{ required: true, message: 'Please input your note!' }]}
+        ]"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+                    label="状态"
+                    :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 16, offset: 2 }"
+            >
+              <a-select
+                      v-decorator="[
+          'status',
+          {rules: [{ required: true, message: 'Please select your gender!' }]}
+        ]"
+                      placeholder="请处理状态"
+              >
+                <a-select-option value="male">
+                  male
+                </a-select-option>
+                <a-select-option value="female">
+                  female
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item
+                    label="备注"
+                    :label-col="{ span: 5 }"
+                    :wrapper-col="{ span: 16, offset: 2 }"
+            >
+              <a-input
+                      placeholder="请输入相关信息"
+                      v-decorator="[
+          'remark',
+        ]"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
     </a-modal>
   </div>
 </template>
@@ -180,11 +264,13 @@ export default {
       }, // 分页配置
       loading: false, // 表格是否加载中
       checkpoints: [], //全部的监测点位
+      checkpointtypes: [], //全部的监测点位
       quarydata: {
       }, // 查询数据
       confirmLoading: [false, false],
       visible: [false, false],
       editdate: {}, // 查看编辑的数据
+      form: this.$form.createForm(this),
     }
   },
   created() {
@@ -221,6 +307,19 @@ export default {
     this.getlist()
   },
   methods: {
+    getalarmtype(index,val){
+      this.form.resetFields('alarmType')
+      this.$get("alarm/getAlarmTypeByCheckPointType", {checkpointType: val.data.attrs.type})
+        .then(res => {
+          if (res) {
+            console.log(res);
+            this.checkpointtypes = res.data.data
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 获取查询的时间段
     onChange (date,datestring) {
       this.quarydata.beginTime = datestring[0]
@@ -336,10 +435,40 @@ export default {
       this.getlist(this.quarydata)
     },
     edithandleOk () {
-      this.visible[0] = false
+      this.confirmLoading = true
+      let {alarmId, status, remark} = this.editdate
+      this.$post("alarm/update", {alarmId, status, remark})
+        .then(res => {
+          if (res) {
+            this.getlist()
+            this.confirmLoading = false
+            this.visible[0] = false
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          this.confirmLoading = false
+          this.visible[0] = false
+        });
     },
     addhandleOk () {
-      this.visible[1] = false
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          values.alarmTime = values.alarmTime.format('YYYY-MM-DD  HH:mm:ss')
+          console.log('Received values of form: ', values);
+          this.$post("alarm/create", values)
+            .then(res => {
+              if (res) {
+                this.getlist()
+                console.log(res);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+          this.visible[1] = false
+        }
+      });
     },
     edithandleCancel () {
       this.visible[0] = false
