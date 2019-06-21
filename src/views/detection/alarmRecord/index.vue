@@ -269,7 +269,7 @@ export default {
       }, // 分页配置
       loading: false, // 表格是否加载中
       checkpoints: [], //全部的监测点位
-      checkpointtypes: [], //全部的监测点位
+      checkpointtypes: [], //全部的报警类型
       quarydata: {
       }, // 查询数据
       confirmLoading: [false, false],
