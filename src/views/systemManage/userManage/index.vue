@@ -325,6 +325,13 @@
 						title: '性别',
 						dataIndex: 'gender',
 						width: 50,
+						customRender:function(text){
+							if(text == '1'){
+								return '男'
+							}else if(text == '2'){
+								return '女'
+							}
+						}
 					},
 					{
 						title: '年龄',
