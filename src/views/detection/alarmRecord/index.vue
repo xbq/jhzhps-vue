@@ -195,15 +195,20 @@
               <a-select
                       v-decorator="[
           'status',
-          {rules: [{ required: true, message: 'Please select your gender!' }]}
         ]"
                       placeholder="请处理状态"
               >
-                <a-select-option value="male">
-                  male
+                <a-select-option value="">
+                  请处理状态
                 </a-select-option>
-                <a-select-option value="female">
-                  female
+                <a-select-option value="已处理">
+                  已处理
+                </a-select-option>
+                <a-select-option value="处理中">
+                  处理中
+                </a-select-option>
+                <a-select-option value="已忽略">
+                  已忽略
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -435,38 +440,41 @@ export default {
       this.getlist(this.quarydata)
     },
     edithandleOk () {
-      this.confirmLoading = true
+      this.confirmLoading[0] = true
       let {alarmId, status, remark} = this.editdate
       this.$post("alarm/update", {alarmId, status, remark})
         .then(res => {
           if (res) {
             this.getlist()
-            this.confirmLoading = false
+            this.confirmLoading[0] = false
             this.visible[0] = false
           }
         })
         .catch(err => {
           console.log(err);
-          this.confirmLoading = false
+          this.confirmLoading[1] = false
           this.visible[0] = false
         });
     },
     addhandleOk () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          values.alarmTime = values.alarmTime.format('YYYY-MM-DD  HH:mm:ss')
+          this.confirmLoading[1] = true
+          values.alarmTime = values.alarmTime.format('YYYY-MM-DD HH:mm:ss')
           console.log('Received values of form: ', values);
-          this.$post("alarm/create", values)
+          this.$post("alarm/create", {...values})
             .then(res => {
               if (res) {
                 this.getlist()
-                console.log(res);
+                this.confirmLoading[1] = false
+                this.visible[1] = false
               }
             })
             .catch(err => {
               console.log(err);
+              this.confirmLoading[1] = false
+              this.visible[1] = false
             });
-          this.visible[1] = false
         }
       });
     },
