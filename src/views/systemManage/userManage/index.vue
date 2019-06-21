@@ -434,8 +434,12 @@
 			      if (res) {
               console.log(res);
               this.editinfo = res.data.data;
-              this.editinfo.department = this.editinfo.departmentId
-              this.editinfo.workIds = this.editinfo.workIds.split('')
+              this.editinfo.department = Number(this.editinfo.departmentId)
+              if(this.editinfo.workIds != null){
+                this.editinfo.workIds = this.editinfo.workIds.split(',')
+              }else {
+                this.editinfo.workIds = []
+              }
 			        this.visible = true;
 			      }
 			    })
@@ -448,16 +452,16 @@
 				console.log('点击确定获取到需要提交的信息');
         this.editinfo.workIds = this.editinfo.workIds.join()
 				console.log(this.editinfo);
-			  // this.$post("user/update", this.editinfo)
-			  //   .then(res => {
-			  //     if (res) {
-			  //       console.log(res);
-			  //       this.getlist(this.limitdata)
-			  //     }
-			  //   })
-			  //   .catch(err => {
-			  //     console.log(err);
-			  //   });
+			  this.$post("user/update", this.editinfo)
+			    .then(res => {
+			      if (res) {
+			        console.log(res);
+			        this.getlist(this.limitdata)
+			      }
+			    })
+			    .catch(err => {
+			      console.log(err);
+			    });
 			  this.visible = false
 			  this.$message.success('编辑成功',2);
 			},
