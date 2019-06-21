@@ -198,7 +198,7 @@
 				      </a-select>
 				    </a-form-item>
 						<a-form-item label="`负责业务`" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
-							<a-select  v-model="editinfo.workNames"
+							<a-select  v-model="editinfo.workIds"
 							     v-decorator="[
 									'workIds',
 									{
@@ -211,13 +211,13 @@
 							 placeholder="负责业务" mode='multiple'>
 								<a-select-option v-for="saleType in saleTypes"
 												:key="saleType.id"
-												:value="saleType.id">
+												:value="String(saleType.id)">
 									{{saleType.name}}
 								</a-select-option>
 							</a-select>
 						</a-form-item>
 						<a-form-item :label="`用户角色`" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
-							<a-select  v-model="editinfo.roleName" placeholder="选择角色">
+							<a-select  v-model="editinfo.role" placeholder="选择角色">
 								<a-select-option v-for="roleType in roleTypes"
 												:key="roleType.id"
 												:value="roleType.id">
@@ -382,7 +382,7 @@
 			})
 			// 获取所有业务类型
 			this.$get("dic/getList",{'type':'任务类型管理','rank':'2'}).then(res=>{
-			    this.saleTypes = res.data.data;
+        this.saleTypes = res.data.data;
 			})
 		},
 		methods: {
@@ -432,7 +432,10 @@
 			  this.$get("user/getById", {userId: id})
 			    .then(res => {
 			      if (res) {
-			        this.editinfo = res.data.data;
+              console.log(res);
+              this.editinfo = res.data.data;
+              this.editinfo.department = this.editinfo.departmentId
+              this.editinfo.workIds = this.editinfo.workIds.split('')
 			        this.visible = true;
 			      }
 			    })
@@ -443,17 +446,18 @@
 			// 确认修改用户信息
 			handleOk () {
 				console.log('点击确定获取到需要提交的信息');
+        this.editinfo.workIds = this.editinfo.workIds.join()
 				console.log(this.editinfo);
-			  this.$post("user/update", this.editinfo)
-			    .then(res => {
-			      if (res) {
-			        console.log(res);
-			        this.getlist(this.limitdata)
-			      }
-			    })
-			    .catch(err => {
-			      console.log(err);
-			    });
+			  // this.$post("user/update", this.editinfo)
+			  //   .then(res => {
+			  //     if (res) {
+			  //       console.log(res);
+			  //       this.getlist(this.limitdata)
+			  //     }
+			  //   })
+			  //   .catch(err => {
+			  //     console.log(err);
+			  //   });
 			  this.visible = false
 			  this.$message.success('编辑成功',2);
 			},
