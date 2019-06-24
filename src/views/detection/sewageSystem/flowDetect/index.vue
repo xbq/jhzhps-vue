@@ -45,6 +45,10 @@
         </a-card>
         <a-card class="historywaterdate" :body-style="{padding: '0 10px'}">
           <h3>24小时流量曲线</h3>
+          <div v-if="hasechartdata" id="todayflowechart"></div>
+          <div v-else class="nodata">
+            <img src="../../../../assets/img/noData.png" alt="">
+          </div>
         </a-card>
         <a-card class="waterdatelist" :body-style="{padding: '0 10px'}">
           <h3>数据列表</h3>
@@ -52,7 +56,7 @@
             <div class="query">
               <div>
                 <a-range-picker size="large" allowClear  @change="onChange"></a-range-picker>
-                <a-select v-model="quarydata.checkPointId" size="large"  placeholder="全部监测点" allowClear>
+                <a-select v-model="quarydatas.checkPointId" size="large"  placeholder="全部监测点" allowClear>
                   <a-select-option v-for="item in checkpoints" :key="item.id" :value="item.id">{{item.name}}</a-select-option>
                 </a-select>
                 <a-button size="large" type="primary" @click="query">查询</a-button>
@@ -63,7 +67,7 @@
                 <a-button size="large" icon="printer">打印</a-button>
               </div>
             </div>
-            <a-table :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{ y: 380 }" :pagination="pagination" @change="pagechange"
+            <a-table size="middle" :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{ y: 380 }" :pagination="pagination" @change="pagechange"
                      :loading="loading">
             </a-table>
           </div>
@@ -172,11 +176,14 @@
           pageSizeOptions: ['5', '10', '20', '30']
         }, // 分页配置
         loading: false, // 表格是否加载中
+        quarydatas: {
+        }, // 准备查询数据的参数
         quarydata: {
-        }, // 查询数据
+        }, // 查询数据参数
         checkpoints: [], //全部的监测点位
         checkpointss: [], //全部的监测点位
         id: 0, // 选择的监测点id
+        hasechartdata: false, //有无图表数据
         confirmLoading: false,
         visible: false,
         form: this.$form.createForm(this),
@@ -222,11 +229,14 @@
             }
           });
       },
-      // 获取不同监测点水质信息
+      // 获取不同监测点流量信息
       getwaterdata(id, index) {
         this.id = id
         this.active = index
-        // 获取最新水质数据
+        this.quarydata = {}
+        this.quarydatas = {}
+        this.pagination.current = 1;
+        // 获取最新流量数据
         this.$get("checkPointData/getLastDataById", {checkpointId: id})
           .then(res => {
             if (res) {
@@ -236,11 +246,101 @@
           .catch(err => {
             console.log(err);
           });
-        // 获取最新水质数据曲线
+        // 获取最新流量数据曲线
         this.$get("checkPointData/queryListForToday", {checkpointId: id,dataType: '流量'})
           .then(res => {
             if (res) {
-              console.log(res);
+              // console.log(res);
+              if(res.data.data.length > 0){
+                this.hasechartdata = true
+                var times = [];
+                var values = [];
+                res.data.data.forEach((val) => {
+                  times.push(val.recordTime.substring(5, 16))
+                  values.push(val.dataValue.toFixed(2))
+                });
+                var todayflowechart = this.$echarts.init(document.getElementById('todayflowechart'))
+                var option =
+                  {
+                    tooltip: {
+                      show: true,
+                      trigger: 'axis',
+                      axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'line', // 默认为直线，可选为：'line' | 'shadow'
+                        lineStyle: {
+                          color: '#e0e0e0'
+                        }
+                      },
+                      extraCssText: 'width:160px;height:60px;',
+                      position: function(p) { //其中p为当前鼠标的位置
+                        return [p[0] + 10, p[1] - 10];
+                      },
+                    },
+                    legend: {
+                      data: ['流量'],
+                      x: 'left'
+                    },
+                    dataZoom: [{
+                      show: true,
+                      realtime: true,
+                      start: 0
+                    }, ],
+                    grid: [{
+                      left: 50,
+                      right: 20,
+                      bottom: 80
+                    }],
+                    xAxis: [{
+                      type: 'category',
+                      boundaryGap: false,
+                      axisLabel: {
+                        textStyle: {
+                          color: '#323232',
+                        },
+                      },
+                      axisLine: {
+                        lineStyle: {
+                          color: '#0095ff'
+                        },
+                        onZero: true
+                      },
+                      data: times
+                    }, ],
+                    yAxis: [{
+                      name: '流量(m³/s)',
+                      type: 'value',
+                      nameGap: 10,
+                      nameTextStyle: {
+                        color: '#BCBCBC',
+                        fontSize: 12
+                      },
+                      axisLabel: {
+                        textStyle: {
+                          color: '#323232',
+                        },
+                      },
+                      axisLine: {
+                        lineStyle: {
+                          color: '#0095ff'
+                        }
+                      },
+                      splitLine: {
+                        show: false
+                      }
+                    }, ],
+                    series: [{
+                      name: '流量',
+                      type: 'line',
+                      symbolSize: 8,
+                      hoverAnimation: false,
+                      data: values
+                    }]
+                  };
+                todayflowechart.setOption(option);
+                window.onresize = todayflowechart.resize;
+              } else {
+                this.hasechartdata = false
+              }
             }
           })
           .catch(err => {
@@ -259,12 +359,15 @@
         this.getlist()
       },
       pagechange (pagination) {
+        if(this.pagination.pageSize !== pagination.pageSize){
+          pagination.current = 1;
+        }
         this.pagination = pagination
         this.getlist()
       },
       // 获取数据列表
-      getlist (data) {
-        this.$get("checkPointData/getList", {'checkPointId':this.id, 'type':'3',limit: this.pagination.pageSize, page: this.pagination.current,...data})
+      getlist () {
+        this.$get("checkPointData/getList", {'checkPointId':this.id, 'type':'3',limit: this.pagination.pageSize, page: this.pagination.current,...this.quarydata})
           .then(res => {
             if (res) {
               this.pagination.total = res.data.count
@@ -286,15 +389,16 @@
       },
       // 获取查询的时间段
       onChange (date,datestring) {
-        this.quarydata.beginTime = datestring[0];
-        this.quarydata.endTime = datestring[1]
+        this.quarydatas.beginTime = datestring[0];
+        this.quarydatas.endTime = datestring[1]
       },
       // 查询
       query () {
-        this.id = this.quarydata.checkPointId;
+        this.id = this.quarydatas.checkPointId;
         this.pagination.current = 1;
         this.pagination.pageSize = 10;
-        this.getlist(this.quarydata)
+        this.quarydata = this.quarydatas
+        this.getlist()
       },
       addhandleOk () {
         this.form.validateFields((err, values) => {
@@ -304,7 +408,9 @@
             this.$post("checkPointData/create", values)
               .then(res => {
                 if (res) {
-                  console.log(res);
+                  // console.log(res);
+                  this.pagination.current = 1;
+                  this.pagination.pageSize = 10;
                 }
               })
               .catch(err => {
@@ -345,8 +451,7 @@
       .L-spin{
         height: 100%;
         overflow: auto;
-        width: 150%;
-        padding-right: 50%;
+        width: calc(100% + 17px)
       }
       ul{
         padding: 20px 5px;
@@ -512,6 +617,16 @@
     .historywaterdate{
       margin-bottom: 15px;
       height: 433px;
+      #todayflowechart{
+        width: 100%;
+        height: 395px;
+      }
+      .nodata{
+        height: 290px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
     .waterdatelist{
       flex: 1;

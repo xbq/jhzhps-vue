@@ -4,21 +4,21 @@
       <div></div>
     </a>
     <div>
-      <a-col :span="8" v-for="item in waternewdata[0]">
-        <h6 :title="item.name">{{item.name}}</h6>
-        <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
+      <a-col :span="8" v-for="(item,index) in waternewdata[0]" :key="index">
+        <h6 :title="item.dataType">{{item.dataType}}</h6>
+        <p :title="item.recordTime">{{item.dataValue.toFixed(2)}}<span>{{item.unit}}</span></p>
       </a-col>
     </div>
     <div>
-      <a-col :span="8" v-for="item in waternewdata[1]">
-        <h6 :title="item.name">{{item.name}}</h6>
-        <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
+      <a-col :span="8" v-for="(item,index) in waternewdata[1]" :key="index">
+        <h6 :title="item.dataType">{{item.dataType}}</h6>
+        <p :title="item.recordTime">{{item.dataValue.toFixed(2)}}<span>{{item.unit}}</span></p>
       </a-col>
     </div>
     <div>
-      <a-col :span="8" v-for="item in waternewdata[2]">
-        <h6 :title="item.name">{{item.name}}</h6>
-        <p>{{item.dataValue}}<span>{{item.unit}}</span></p>
+      <a-col :span="8" v-for="(item,index) in waternewdata[2]" :key="index">
+        <h6 :title="item.dataType">{{item.dataType}}</h6>
+        <p :title="item.recordTime">{{item.dataValue.toFixed(2)}}<span>{{item.unit}}</span></p>
       </a-col>
     </div>
   </a-carousel>

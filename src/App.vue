@@ -74,7 +74,7 @@ h3:before {
   padding: 14px 0;
 }
 .mycardcont h6 {
-  padding-left: 20px;
+  padding-left: 10px;
   margin-bottom: 10px;
   /*font-family: AlibabaPuHuiTiL;*/
   font-size: 12px;
@@ -87,15 +87,16 @@ h3:before {
   white-space: nowrap;
 }
 .mycardcont p {
-  padding-left: 20px;
+  padding-left: 10px;
   /*font-family: DIN-Regular;*/
-  font-size: 28px;
+  font-size: 22px;
   font-weight: normal;
   font-stretch: normal;
   letter-spacing: 2px;
   color: #323232;
   line-height: 24px;
   margin-bottom: 0;
+  overflow: hidden;
 }
 .mycardcont p span{
   font-size: 14px;

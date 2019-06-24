@@ -72,12 +72,12 @@
       <h3>单位列表</h3>
       <div style="padding:30px 5px 15px">
         <a-table :columns="columns"
-                 size="small"
+                 size="middle"
                  :style="{wordBreak: 'break-all'}"
                  :dataSource="data"
                  :pagination="pagination"
                  :loading="loading"
-                 :scroll="{ y: 'calc(100vh - 420px)'}"
+                 :scroll="{ y: 'calc(100vh - 440px)'}"
         >
           <template slot="operation" slot-scope="text, record, index">
             <div class='editable-row-operations'>

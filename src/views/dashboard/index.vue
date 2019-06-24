@@ -45,7 +45,7 @@
       <div class="divcard">
         <h3>今日上报情况</h3>
           <ul class="departList">
-            <a-spin :spinning="spinning[3]">
+            <a-spin v-if="companylist.length>0" :spinning="spinning[3]">
               <li v-for="(item,index) in companylist" :key="index" @click="gettable(item.departmentId,index)"
                   :class="active === index ?'active':''">
                 <div class="left" v-if="index===0">
@@ -64,6 +64,9 @@
                 </div>
               </li>
             </a-spin>
+            <div v-else style="text-align: center">
+              <img src="../../assets/img/noData.png" alt="">
+            </div>
           </ul>
         <div class="desktable">
           <a-table :columns="columns"
