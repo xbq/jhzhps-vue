@@ -4,9 +4,12 @@
       :trigger="null"
       collapsible
       v-model="collapsed"
+      :style="{overflow: 'hidden'}"
     >
       <div class="logo" />
-      <sidebar/>
+      <div style="overflow: auto;height: calc(100% - 64px);width: 217px">
+        <sidebar/>
+      </div>
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
@@ -18,7 +21,7 @@
 <headerMenu class="headerNav"/>
       </a-layout-header>
       
-      <a-layout-content :style="{ margin: '24px 16px',background: '#fff', minHeight: '280px' }">
+      <a-layout-content :style="{ margin: '24px 16px',background: '#fff', minHeight: '280px',overflowY: 'auto',overflowX: 'hidden' }">
         <AppMain/>
       </a-layout-content>
     </a-layout>
@@ -72,5 +75,8 @@ export default {
 
 #components-layout-demo-custom-trigger .headerNav {
   float: right;
+}
+#components-layout-demo-custom-trigger .ant-menu{
+  width: 200px;
 }
 </style>

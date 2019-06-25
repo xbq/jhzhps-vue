@@ -450,10 +450,13 @@
       position: relative;
       .L-spin{
         height: 100%;
-        overflow: auto;
-        width: calc(100% + 17px)
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 150%;
+        padding-right: 50%;
       }
       ul{
+        width: 386px;
         padding: 20px 5px;
         height: 100%;
         .active{
@@ -551,9 +554,9 @@
       overflow: hidden;
       &>div{
         height: 100%;
-        overflow: auto;
-        width: 150%;
-        padding-right: 50%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: calc(100% + 17px);
       }
     }
     .newwaterdate{
