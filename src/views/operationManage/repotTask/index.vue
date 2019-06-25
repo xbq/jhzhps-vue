@@ -157,12 +157,12 @@
       </a-layout>
       <a-layout-footer>
 				<a-row>
-					<a-col :span="24" :style="{ textAlign: 'right' }">
-						<a-button :style="{ marginRight: '8px' }" @click="handleReset">
-							清空
+					<a-col :span="24" :style="{ textAlign: 'right', marginTop: '20px'}">
+						<a-button :style="{ marginRight: '15px' }" @click="handleReset">
+							重置
 						</a-button>
-						<a-button type="primary" html-type="submit">
-							添加
+						<a-button :style="{ marginRight: '20px' }" type="primary" html-type="submit">
+							创建
 						</a-button>
 					</a-col>
 				</a-row>
@@ -207,6 +207,10 @@
 #components-layout-demo-basic > .ant-layout:last-child {
   margin: 0;
 }
+.ant-btn{
+	height: 40px;
+	width: 100px;
+}
 // 上传样式
 .ant-upload-select-picture-card i {
     font-size: 32px;
@@ -216,6 +220,18 @@
 .ant-upload-select-picture-card .ant-upload-text {
 	margin-top: 8px;
 	color: #666;
+}
+.clearfix{
+	height: calc(50% - 15px);
+	overflow: auto;
+}
+.ant-upload.ant-upload-select-picture-card{
+	background: orange;
+}
+.clearfix .ant-upload-list-picture-card .ant-upload-list-item{
+	width:90px;
+	height:90px;
+	margin:10px 0 10px 10px;
 }
 </style>
 <script>
@@ -248,8 +264,6 @@
 				})
 		},
 		mounted(){
-			console.log(777777);
-			console.log(data);
 		},
 		computed: {
 			count () {
