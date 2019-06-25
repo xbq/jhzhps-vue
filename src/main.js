@@ -8,7 +8,7 @@ import '@/utils/global'//全局
 import './promission'//这里进行路由后台获取的模拟
 import {get,post,patch,put} from './utils/http.js'
 import echarts from 'echarts'
-import {Form,inputNumber,Input,Button,Select,Icon,Checkbox,message,Menu,Layout,Card,Table,Row,Col,LocaleProvider,Spin,Modal,Carousel,DatePicker,Tabs} from 'ant-design-vue'
+import {Form,inputNumber,Upload,Input,Button,Select,Icon,Checkbox,message,Menu,Layout,Card,Table,Row,Col,LocaleProvider,Spin,Modal,Carousel,DatePicker,Tabs} from 'ant-design-vue'
 
 Vue.use(Form);
 Vue.use(inputNumber);
@@ -17,6 +17,7 @@ Vue.use(Button);
 Vue.use(Select);
 Vue.use(Icon);
 Vue.use(Checkbox);
+Vue.use(Upload);
 // Vue.use(message);
 Vue.use(Menu);
 Vue.use(Layout);

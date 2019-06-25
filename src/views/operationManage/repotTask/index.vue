@@ -9,7 +9,13 @@
 				  
 				  			<a-form-item :label="`紧急程度`" v-if="i===1">
 				  				<a-select v-decorator="[
-				  						'urgencyDegree'
+				  						'urgencyDegree',
+											{
+				  						  rules: [{
+				  						    required: true,
+				  						    message: '请选择紧急程度!',
+				  						  }],
+				  						}
 				  					]"
 				  				 placeholder="紧急程度">
 				  					<a-select-option value="1">
@@ -112,21 +118,14 @@
 				  												 placeholder="上报单位" />
 				  			</a-form-item>
 				  			<a-form-item :label="`上报时间`" v-if="i===8">
-				  				<a-select v-decorator="[
+				  				<a-date-picker @change="onChange" v-decorator="[
 				  						'reportTime',
-				  						{
+											{
 				  						  rules: [{
-				  						    required: true,
-				  						    message: '请选择上报时间!',
+				  						    required: true
 				  						  }],
 				  						}
-				  					]"
-				  				 placeholder="上报时间">
-				  					<a-select-option v-for="departmentType in departmentTypes"
-				  									:key="departmentType.id"
-				  									:value="departmentType.id">
-				  						{{departmentType.name}}
-				  					</a-select-option>
+				  					]"/>
 				  				</a-select>
 				  			</a-form-item>
 				  		</a-col>
@@ -137,16 +136,33 @@
         <a-layout-content>map</a-layout-content>
         <a-layout-sider style="flex:0 0 400px;width:400px;max-width: 400px;margin-left: 15px;">
 					<page-header titles="养护前照片上传"></page-header>
+					<div class="clearfix">
+						<a-upload
+							action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+							listType="picture-card"
+							:fileList="fileList"
+							@preview="handlePreview"
+							@change="handleChange"
+						>
+							<div v-if="fileList.length < 100">
+								<a-icon type="plus" />
+								<div class="ant-upload-text">Upload</div>
+							</div>
+						</a-upload>
+						<a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+							<img alt="example" style="width: 100%" :src="previewImage" />
+						</a-modal>
+					</div>
 				</a-layout-sider>
       </a-layout>
       <a-layout-footer>
 				<a-row>
-					<a-col :span="24" :style="{ textAlign: 'right' }">
-						<a-button :style="{ marginRight: '8px' }" @click="handleReset">
-							清空
+					<a-col :span="24" :style="{ textAlign: 'right', marginTop: '20px'}">
+						<a-button :style="{ marginRight: '15px' }" @click="handleReset">
+							重置
 						</a-button>
-						<a-button type="primary" html-type="submit">
-							添加
+						<a-button :style="{ marginRight: '20px' }" type="primary" html-type="submit">
+							创建
 						</a-button>
 					</a-col>
 				</a-row>
@@ -191,6 +207,32 @@
 #components-layout-demo-basic > .ant-layout:last-child {
   margin: 0;
 }
+.ant-btn{
+	height: 40px;
+	width: 100px;
+}
+// 上传样式
+.ant-upload-select-picture-card i {
+    font-size: 32px;
+    color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+	margin-top: 8px;
+	color: #666;
+}
+.clearfix{
+	height: calc(50% - 15px);
+	overflow: auto;
+}
+.ant-upload.ant-upload-select-picture-card{
+	background: orange;
+}
+.clearfix .ant-upload-list-picture-card .ant-upload-list-item{
+	width:90px;
+	height:90px;
+	margin:10px 0 10px 10px;
+}
 </style>
 <script>
 	import pageHeader from '@/components/pageHeader.vue'
@@ -201,7 +243,15 @@
 					form: this.$form.createForm(this),
 					taskBigLevel:[],//任务大类集合
 					taskSmallLevel:[],//任务小类集合
-					taskDetailLevel:[] //细分类型集合
+					taskDetailLevel:[],//细分类型集合
+					previewVisible: false,
+					previewImage: '',
+					fileList: [{
+						uid: '-1',
+						name: 'xxx.png',
+						status: 'done',
+						url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+					}],
 			}
 		},
 		components: {
@@ -214,8 +264,6 @@
 				})
 		},
 		mounted(){
-			console.log(777777);
-			console.log(data);
 		},
 		computed: {
 			count () {
@@ -242,10 +290,22 @@
 				      this.taskDetailLevel = res.data.data;
 					})
 			},
+			onChange(date, dateString) {
+				console.log(date, dateString);
+			},
 			handleReset () {
 				this.form.resetFields();
 			},
-
+			handleCancel () {   // 上传
+      this.previewVisible = false
+			},
+			handlePreview (file) {
+				this.previewImage = file.url || file.thumbUrl
+				this.previewVisible = true
+			},
+			handleChange ({ fileList }) {
+				this.fileList = fileList
+			},
 			toggle  () {
 				this.expand = !this.expand;
 			},
