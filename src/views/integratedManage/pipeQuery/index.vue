@@ -6,6 +6,7 @@
               v-model="activeKey"
               type="card"
               :style="{height: '100%'}"
+              :tabBarGutter="0"
       >
         <a-tab-pane tab="污水管井" key="1" :closable=false>
           <div class="item">
@@ -46,7 +47,8 @@ export default {
     }
   },
   created() {
-
+  },
+  mounted() {
   },
   methods: {
   }

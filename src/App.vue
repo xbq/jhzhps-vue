@@ -112,4 +112,17 @@ h3:before {
 	height:50px;
 	line-height: 50px;
 }
+/*tab切换标签样式*/
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+  border-color: transparent;
+  background: transparent;
+}
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab:hover{
+  color: #000;
+}
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+  border-color: #e8e8e8;
+  background: #fff;
+  color: #000;
+}
 </style>

@@ -17,14 +17,48 @@
       <a-input size="large" v-model="quarydatas.szdl"></a-input>
       <a-button size="large" type="primary" @click="query">查询</a-button>
     </div>
-    <a-table :columns="columns" :dataSource="data" size="middle" :style="{marginTop: '10px'}" :scroll="{ x: 1620, y: 'calc(100vh - 320px)' }"  @change="pagechange" :pagination="pagination"
+    <a-table bordered :columns="columns" :dataSource="data" size="middle" :style="{marginTop: '10px'}" :scroll="{ x: 1620, y: 'calc(100vh - 320px)' }"  @change="pagechange" :pagination="pagination"
              :loading="loading">
-      <div slot="action" slot-scope="text">
-        <a>查看</a>
-        <span style="padding: 0 3px;color: #e6e6e6;">|</span>
+      <div slot="action" slot-scope="text" style="text-align: center">
+        <a @click="see(text.id)">查看</a>
+        <span style="padding: 0 8px;color: #e6e6e6;">|</span>
         <a>定位</a>
       </div>
     </a-table>
+    <a-modal
+            title="查看详细信息"
+            :visible="visible"
+            :confirmLoading="confirmLoading"
+            @cancel="handleCancel"
+            :centered=true
+            :footer="null"
+            width="800px"
+    >
+      <ul class="detail">
+        <li><div>物探点号</div><div>{{detailinfo.wtdh}}</div></li>
+        <li><div>图上点号</div><div>{{detailinfo.tsdh}}</div></li>
+        <li><div>X坐标  (m)</div><div>{{detailinfo.xzb}}</div></li>
+        <li><div>Y坐标  (m)</div><div>{{detailinfo.yzb}}</div></li>
+        <li><div>地面高程  (m)</div><div>{{detailinfo.dmgc}}</div></li>
+        <li><div>特征点</div><div>{{detailinfo.tzd}}</div></li>
+        <li><div>附属物</div><div>{{detailinfo.fsw}}</div></li>
+        <li><div>偏心井位</div><div>{{detailinfo.pxjw}}</div></li>
+        <li><div>井室附属物代码</div><div>{{detailinfo.jsfswdm}}</div></li>
+        <li><div>井盖材质</div><div>{{detailinfo.jgcz}}</div></li>
+        <li><div>井盖规格</div><div>{{detailinfo.jggg}}</div></li>
+        <li><div>井底深  (m)</div><div>{{detailinfo.jds}}</div></li>
+        <li><div>井室规格 (mm)</div><div>{{detailinfo.jsgg}}</div></li>
+        <li><div>井脖高 (mm)</div><div>{{detailinfo.jbg}}</div></li>
+        <li><div>井脖规格 (mm)</div><div>{{detailinfo.jbgg}}</div></li>
+        <li><div>井室角度 (rad)</div><div>{{detailinfo.jsjd}}</div></li>
+        <li><div>井盖照片代码</div><div>{{detailinfo.jgzpdm}}</div></li>
+        <li><div>图幅号</div><div>{{detailinfo.tfh}}</div></li>
+        <li><div>图例角度  (°)</div><div>{{detailinfo.tljd}}</div></li>
+        <li><div>所在道路</div><div>{{detailinfo.szdl}}</div></li>
+        <li><div>建设年代</div><div>{{detailinfo.buildtime}}</div></li>
+        <li><div>备注</div><div  :title="detailinfo.remark">{{detailinfo.remark}}</div></li>
+      </ul>
+    </a-modal>
   </div>
 </template>
 
@@ -76,6 +110,9 @@
           tzd: [],
           jgcz: [],
         }, // 污水管井下拉选项数据
+        visible: false,
+        confirmLoading: false,
+        detailinfo: {}
       }
     },
     props: ['type'],
@@ -87,10 +124,7 @@
       this.getlist()
     },
     mounted() {
-      let tab = document.getElementsByClassName('ant-table-body')
-      for (let i = 0; i < tab.length; i++) {
-        tab[i].style.height = 'calc(100vh - 320px)'
-      }
+
     },
     methods: {
       // 查询
@@ -105,6 +139,11 @@
           .then(res => {
             if (res) {
               this.data = res.data.data;
+              if(this.data.length > 0){
+                document.getElementsByClassName('ant-table-body')[0].style.height = 'calc(100vh - 320px)'
+              }else {
+                document.getElementsByClassName('ant-table-body')[0].style.height = 'unset'
+              }
               this.data.forEach( (val)=> {
                 val.key = val.id
                 for(let item in val){
@@ -141,6 +180,23 @@
         this.pagination = pagination;
         this.getlist()
       },
+      handleCancel () {
+        this.visible = false
+        console.log('cancel');
+      },
+      see (id) {
+        this.visible = true
+        this.$get("guanWang/getById", {type: this.type, id: id})
+          .then(res => {
+            if (res) {
+              console.log(res);
+              this.detailinfo = res.data.data
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   }
 </script>
@@ -160,6 +216,39 @@
     .ant-select,.ant-input{
       width: 240px;
     }
+  }
+}
+.detail{
+  display: flex;
+  flex-wrap: wrap;
+  li{
+    width: 367px;
+    display: flex;
+    height: 38px;
+    line-height: 38px;
+    border: 1px solid #e6e6e6;
+    div:nth-of-type(1){
+      width: 140px;
+      background-color: #FBFBFB;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      border-right: 1px solid #e6e6e6;
+      padding: 0 15px;
+    }
+    div:nth-of-type(2){
+      width: 225px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 0 15px;
+    }
+  }
+  li:nth-of-type(2n){
+    margin-left: 15px;
+  }
+  li:nth-of-type(n+3){
+    margin-top: 15px;
   }
 }
 </style>
