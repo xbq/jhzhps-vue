@@ -6,7 +6,7 @@
 					<div class="card-container">
 						<a-tabs type="card"  v-model="activeKey" @click="change(activeKey)">
 							 <a-tab-pane :tab="taskTab.name" :key="taskTab.status" v-for="(taskTab,index) in taskTabTitle">
-								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }">
+								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }" @change="pagechange" :pagination="pagination">
 									<a slot="action" slot-scope="text" href="javascript:;">打印</a>
 								</a-table>
 							</a-tab-pane>
@@ -37,11 +37,6 @@
   margin: 0;
 }
 // 标签页
-.card-container {
-  background: #F5F5F5;
-  overflow: hidden;
-  padding: 24px;
-}
 .card-container > .ant-tabs-card > .ant-tabs-content {
   height: 120px;
   margin-top: -16px;
@@ -67,6 +62,7 @@
 }
 .card-container{
 	background: #fff;
+	overflow: hidden;
 	padding:15px;
 }
 .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane[data-v-5412eb2e]{
@@ -99,7 +95,20 @@ export default {
 			taskTabTitle:[{'name':'新任务','status':'1'},{'name':'正在养护','status':'2'},{'name':'养护完成','status':'3'},{'name':'正在监理','status':'4'},{'name':'监理审核不通过','status':'6'},{'name':'养护存在问题','status':'8'},{'name':'监理存在问题','status':'9'}],
 			data:[],
       columns,
-			activeKey: '1'
+			activeKey: '1',
+			pagination: {
+			  current: 1,
+			  defaultCurrent: 1,
+			  defaultPageSize: 10,
+			  pageSize: 10,
+			  showQuickJumper: true,
+			  showSizeChanger: true,
+			  size: 'small',
+			  total: 0,
+			  showTotal: total => `共 ${total} 条`,
+			  // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
+			  pageSizeOptions: ['10', '20', '30', '40', '50']
+			}, // 分页配置
     }
   },
 	components: {
@@ -107,17 +116,26 @@ export default {
 	},
 	created(){
 			// 初始化任务列表
-			this.$get("task/getList",{'limit':'-1','status':'1'}).then(res=>{
-					this.data = res.data.data;
-			})
+			this.getList(1)
 		},
   methods: {
     change (key) {
+			this.getList(key);
+    },
+		getList(key){
 			// 获取任务列表
 			this.$get("task/getList",{'limit':'-1','status':key}).then(res=>{
 					this.data = res.data.data;
 			})
-    },
+		},
+    pagechange (pagination) {
+		 // 页码改变时重新获取数据
+        if(this.pagination.pageSize !== pagination.pageSize){
+          pagination.current = 1;
+        }
+        this.pagination = pagination;
+        this.getlist()
+      },
   },
 }
 </script>
