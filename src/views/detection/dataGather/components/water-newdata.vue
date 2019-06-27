@@ -16,7 +16,7 @@
       </a-col>
     </div>
     <div>
-      <a-col :span="8" v-for="(item,index) in waternewdata[2]" :key="index">
+      <a-col :span="12" v-for="(item,index) in waternewdata[2]" :key="index">
         <h6 :title="item.dataType">{{item.dataType}}</h6>
         <p :title="item.recordTime">{{item.dataValue.toFixed(2)}}<span>{{item.unit}}</span></p>
       </a-col>
@@ -29,7 +29,7 @@
     name: "water-newdata",
     data () {
       return {
-        waternewdata: [], //水质监测点最新数据
+        waternewdata: [[], [], []], //水质监测点最新数据
       }
     },
     mounted () {
@@ -38,11 +38,14 @@
         .then(res => {
           if (res) {
             // console.log(res);
-            res.data.data.forEach((val,index) => {
-              if (index%3 === 0) {
-                this.waternewdata.push([])
+            res.data.data.forEach((val) => {
+              if(val.dataType === 'COD'){
+                this.waternewdata[2].push(val)
+              }else if(this.waternewdata[0].length === 3){
+                this.waternewdata[1].push(val)
+              }else {
+                this.waternewdata[0].push(val)
               }
-              this.waternewdata[Math.floor(index/3)].push(val)
             })
           }
         })

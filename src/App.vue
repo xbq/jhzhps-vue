@@ -89,7 +89,7 @@ h3:before {
 .mycardcont p {
   padding-left: 10px;
   /*font-family: DIN-Regular;*/
-  font-size: 22px;
+  font-size: 28px;
   font-weight: normal;
   font-stretch: normal;
   letter-spacing: 2px;

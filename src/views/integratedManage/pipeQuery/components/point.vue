@@ -140,9 +140,17 @@
             if (res) {
               this.data = res.data.data;
               if(this.data.length > 0){
-                document.getElementsByClassName('ant-table-body')[0].style.height = 'calc(100vh - 320px)'
+                if (this.type === 'wspoint') {
+                  document.getElementsByClassName('ant-table-body')[0].style.height = 'calc(100vh - 320px)'
+                }else {
+                  document.getElementsByClassName('ant-table-body')[2].style.height = 'calc(100vh - 320px)'
+                }
               }else {
-                document.getElementsByClassName('ant-table-body')[0].style.height = 'unset'
+                if (this.type === 'wspoint') {
+                  document.getElementsByClassName('ant-table-body')[0].style.height = 'unset'
+                }else {
+                  document.getElementsByClassName('ant-table-body')[2].style.height = 'unset'
+                }
               }
               this.data.forEach( (val)=> {
                 val.key = val.id

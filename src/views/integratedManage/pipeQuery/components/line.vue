@@ -137,9 +137,17 @@
             if (res) {
               this.data = res.data.data;
               if(this.data.length > 0){
-                document.getElementsByClassName('ant-table-body')[0].style.height = 'calc(100vh - 320px)'
+                if (this.type === 'wsline') {
+                  document.getElementsByClassName('ant-table-body')[1].style.height = 'calc(100vh - 320px)'
+                } else {
+                  document.getElementsByClassName('ant-table-body')[3].style.height = 'calc(100vh - 320px)'
+                }
               }else {
-                document.getElementsByClassName('ant-table-body')[0].style.height = 'unset'
+                if (this.type === 'wsline') {
+                  document.getElementsByClassName('ant-table-body')[1].style.height = 'unset'
+                } else {
+                  document.getElementsByClassName('ant-table-body')[3].style.height = 'unset'
+                }
               }
               this.data.forEach( (val)=> {
                 val.key = val.id
@@ -162,6 +170,11 @@
           .then(res => {
             if (res) {
               // console.log(res);
+              if(column === 'gj'){
+                res.data.data.sort((x, y) => {
+                  return x.GJ-y.GJ
+                })
+              }
               this.$set(this.line, column, res.data.data)
             }
           })

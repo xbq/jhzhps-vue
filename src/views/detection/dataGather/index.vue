@@ -85,7 +85,7 @@
       </a-col>
     </a-row>
     <a-row :gutter="15" style="margin-top: 15px">
-      <a-col :span="16" >
+      <a-col :span="15" >
         <a-card :body-style="{padding: '0 10px'}">
           <h3>监测数据统计
             <a class="tabcircle">
@@ -136,7 +136,7 @@
           </div>
         </a-card>
       </a-col>
-      <a-col :span="8">
+      <a-col :span="9">
         <a-card :body-style="{padding: '0 10px'}"  v-if="pointtabindex===0">
           <h3>监测数据</h3>
           <div style="border-bottom: 1px solid #e0e0e0;padding-bottom: 2px">
@@ -538,6 +538,7 @@ export default {
       this.floodactive = i
       if (this.floodechartdata !== '今日无数据') {
         var Lfloodecharts = this.$echarts.init(document.getElementById('L-floodecharts'))
+        Lfloodecharts.clear()
         var option =
           {
             tooltip: {
@@ -668,6 +669,7 @@ export default {
           };
         Lfloodecharts.setOption(option);
         window.onresize = Lfloodecharts.resize;
+        Lfloodecharts.resize()
       }
       this.spinning[0] = false
     },
@@ -677,6 +679,7 @@ export default {
       this.wateractive = i
       if (this.waterechartdata !== '今日无数据') {
         var Lwaterecharts = this.$echarts.init(document.getElementById('L-waterecharts'))
+        Lwaterecharts.clear()
         var options =
             [
               {
@@ -941,6 +944,7 @@ export default {
         option.dataZoom[0].end = (7 / this.waterechartdata[i].xAxisData.length) * 100
         Lwaterecharts.setOption(option);
         window.onresize = Lwaterecharts.resize;
+        Lwaterecharts.resize()
       }
       this.spinning[1] = false
     },
