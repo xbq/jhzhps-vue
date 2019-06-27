@@ -6,7 +6,7 @@
 					<div class="card-container">
 						<a-tabs type="card"  v-model="activeKey" @click="change(activeKey)">
 							 <a-tab-pane :tab="taskTab.name" :key="taskTab.status" v-for="(taskTab,index) in taskTabTitle">
-								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }" @change="pagechange" :pagination="pagination">
+								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }" @change="pagechange" :pagination="pagination" :customRow="click">
 									<a slot="action" slot-scope="text" href="javascript:;">打印</a>
 								</a-table>
 							</a-tab-pane>
@@ -15,14 +15,14 @@
 				</a-layout-content>
         <a-layout-sider style="flex:0 0 320px;width:320px;max-width: 320px;margin-left: 15px;">
 					<page-header titles="任务详情"></page-header>
+					<task-detail :details=this.rowDetails></task-detail>
 				</a-layout-sider>
       </a-layout>
   </div>
 </template>
 <style scoped="scoped" lang="scss">
 #components-layout-demo-basic .ant-layout-sider {
-  background: #3ba0e9;
-  color: #fff;
+  background:#fff;
 }
 #components-layout-demo-basic .ant-layout-content {
   color: #fff;
@@ -71,6 +71,7 @@
 </style>
 <script>
 import pageHeader from '@/components/pageHeader.vue'
+import taskDetail from '@/components/taskDetail.vue'
 const columns = [
   { title: '任务编号', width: 120, dataIndex: 'taskNum', key: 'name', fixed: 'left' },
   { title: '状态', width: 100, dataIndex: '', key: 'age', fixed: 'left' },
@@ -95,6 +96,8 @@ export default {
 			taskTabTitle:[{'name':'新任务','status':'1'},{'name':'正在养护','status':'2'},{'name':'养护完成','status':'3'},{'name':'正在监理','status':'4'},{'name':'监理审核不通过','status':'6'},{'name':'养护存在问题','status':'8'},{'name':'监理存在问题','status':'9'}],
 			data:[],
       columns,
+			rowDetails:{},//点击获取一行的值
+			clickRowColor:{'background-color': 'rgb(204, 238, 255)'; 'color': 'rgb(0, 149, 255)';}
 			activeKey: '1',
 			pagination: {
 			  current: 1,
@@ -112,7 +115,8 @@ export default {
     }
   },
 	components: {
-		'page-header': pageHeader
+		'page-header': pageHeader,
+		'task-detail':taskDetail
 	},
 	created(){
 			// 初始化任务列表
@@ -136,6 +140,20 @@ export default {
         this.pagination = pagination;
         this.getlist()
       },
+		 click(record, index){
+        return {
+            on: {
+               click: () => {
+								 this.rowDetails = record;
+								 console.log(99888);
+								 console.log(this.rowDetails);
+               }
+            }
+        }
+    }
   },
+	mounted(){
+		
+	}
 }
 </script>
