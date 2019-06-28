@@ -97,7 +97,7 @@ export default {
 			data:[],
       columns,
 			rowDetails:{},//点击获取一行的值
-			clickRowColor:{'background-color': 'rgb(204, 238, 255)'; 'color': 'rgb(0, 149, 255)';}
+			clickRowColor:{'background-color': 'rgb(204, 238, 255)'},
 			activeKey: '1',
 			pagination: {
 			  current: 1,
