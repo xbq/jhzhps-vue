@@ -24,19 +24,19 @@
       <div style="padding:27px 10px">
         <div class="query">
           <div>
-            <a-select v-model="quarydata.type" size="large"  placeholder="设备类型" allowClear>
+            <a-select v-model="quarydatas.type" size="large"  placeholder="设备类型" allowClear>
               <a-select-option v-for="(item,index) in quaryselect.type" :key="index" :value="item.type">{{item.type}}</a-select-option>
             </a-select>
-            <a-select v-model="quarydata.adminDepartment" size="large"  placeholder="管理部门" allowClear>
+            <a-select v-model="quarydatas.adminDepartment" size="large"  placeholder="管理部门" allowClear>
               <a-select-option v-for="(item,index) in quaryselect.adminDepartment" :key="index" :value="item.adminDepartment">{{item.adminDepartment}}</a-select-option>
             </a-select>
-            <a-select v-model="quarydata.ownership" size="large"  placeholder="权属单位" allowClear>
+            <a-select v-model="quarydatas.ownership" size="large"  placeholder="权属单位" allowClear>
               <a-select-option v-for="(item,index) in quaryselect.ownership" :key="index" :value="item.ownership">{{item.ownership}}</a-select-option>
             </a-select>
-            <a-select v-model="quarydata.runningStatus" size="large"  placeholder="运行状态" allowClear>
+            <a-select v-model="quarydatas.runningStatus" size="large"  placeholder="运行状态" allowClear>
               <a-select-option v-for="(item,index) in quaryselect.runningStatus" :key="index" :value="item.runningStatus">{{item.runningStatus}}</a-select-option>
             </a-select>
-            <a-button size="large" type="primary">查询</a-button>
+            <a-button size="large" @click="query" type="primary">查询</a-button>
           </div>
           <div>
             <a-button size="large"  @click="add" icon="plus-circle">添加</a-button>
@@ -44,7 +44,7 @@
             <a-button size="large" icon="printer">打印</a-button>
           </div>
         </div>
-        <a-table :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{x: 1810}" :pagination="pagination"
+        <a-table :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{x: 1810}" :pagination="pagination"  @change="pagechange"
                  :loading="loading">
           <div slot="action" slot-scope="text">
             <a @click="see(text.id)">查看</a>
@@ -59,14 +59,15 @@
     <a-modal
             :title="title"
             :visible="visible"
-            @ok="addhandleOk"
-            @cancel="addhandleCancel"
+            @ok="handleOk"
+            @cancel="handleCancel"
             width="800px"
             :centered=true
-            :footer="action===2?null:defaultBottom"
+            :footer="()=>{if(action===2)return null}"
     >
       <a-form
               :form="form"
+              disabled
       >
         <a-row :gutter="24">
           <a-col :span="12">
@@ -79,6 +80,7 @@
                       allowClear
                       v-decorator="['type']"
                       placeholder="设备类型"
+                      :disabled="action===2"
               >
                 <a-select-option v-for="(item,index) in quaryselect.type" :key="index" :value="item.type">{{item.type}}</a-select-option>
               </a-select>
@@ -90,7 +92,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['name']"/>
+              <a-input :disabled="action===2" v-decorator="['name']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -99,7 +101,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['custodian']"/>
+              <a-input :disabled="action===2" v-decorator="['custodian']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -112,6 +114,7 @@
                       allowClear
                       v-decorator="['adminDepartment']"
                       placeholder="管理部门"
+                      :disabled="action===2"
               >
                 <a-select-option v-for="(item,index) in quaryselect.adminDepartment" :key="index" :value="item.adminDepartment">{{item.adminDepartment}}</a-select-option>
               </a-select>
@@ -127,6 +130,7 @@
                       allowClear
                       v-decorator="['ownership']"
                       placeholder="权属单位"
+                      :disabled="action===2"
               >
                 <a-select-option v-for="(item,index) in quaryselect.ownership" :key="index" :value="item.ownership">{{item.ownership}}</a-select-option>
               </a-select>
@@ -138,7 +142,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['site']"/>
+              <a-input :disabled="action===2" v-decorator="['site']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -151,6 +155,7 @@
                       allowClear
                       v-decorator="['runningStatus']"
                       placeholder="运行状态"
+                      :disabled="action===2"
               >
                 <a-select-option v-for="(item,index) in quaryselect.runningStatus" :key="index" :value="item.runningStatus">{{item.runningStatus}}</a-select-option>
               </a-select>
@@ -162,7 +167,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['spare']"/>
+              <a-input :disabled="action===2" v-decorator="['spare']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -171,7 +176,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['manual']"/>
+              <a-input :disabled="action===2" v-decorator="['manual']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -180,7 +185,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['manufacturer']"/>
+              <a-input :disabled="action===2" v-decorator="['manufacturer']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -189,7 +194,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['afterSale']"/>
+              <a-input :disabled="action===2" v-decorator="['afterSale']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -198,7 +203,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['repairRecord']"/>
+              <a-input :disabled="action===2" v-decorator="['repairRecord']"/>
             </a-form-item>
           </a-col>
           <a-col :span="12">
@@ -207,7 +212,7 @@
                     :label-col="{ span: 5 }"
                     :wrapper-col="{ span: 16, offset: 2 }"
             >
-              <a-input v-decorator="['remark']"/>
+              <a-input :disabled="action===2" v-decorator="['remark']"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -283,6 +288,8 @@ export default {
         pageSizeOptions: ['10', '20', '30']
       }, // 分页配置
       loading: false, // 表格是否加载中
+      quarydatas: {
+      }, // 准备查询的数据
       quarydata: {
       }, // 查询数据
       quaryselect: {}, //下拉选项
@@ -401,7 +408,7 @@ export default {
     },
     // 获取数据列表
     getlist () {
-      this.$get("equipment/ledger/getList", {})
+      this.$get("equipment/ledger/getList", {...this.quarydata,limit: this.pagination.pageSize, page: this.pagination.current,})
         .then(res => {
           if (res) {
             // console.log(res);
@@ -417,10 +424,11 @@ export default {
     },
     // 添加
     add () {
+      this.action = 0
       this.visible = true;
     },
-    // 确认添加
-    addhandleOk () {
+    // 确认
+    handleOk () {
       if (this.action === 0) {
         this.form.validateFields((err, values) => {
           if (!err) {
@@ -458,20 +466,22 @@ export default {
       }
       this.form.resetFields()
     },
-    // 取消添加
-    addhandleCancel () {
+    // 取消
+    handleCancel () {
       this.visible = false;
       this.form.resetFields()
     },
     // 编辑
     edit (id) {
       this.visible = true;
-      this.action=1
+      this.title = '信息编辑'
+      this.action = 1
       this.id = id
       this.$get("equipment/ledger/getDetail", {id})
         .then(res => {
           if (res) {
             // console.log(res);
+            // delete res.data.data.id
             this.form.setFieldsValue(res.data.data)
           }
         })
@@ -495,17 +505,33 @@ export default {
     // 查看
     see (id) {
       this.visible = true;
-      this.action=2
+      this.title = '查看详细信息'
+      this.action = 2
       this.$get("equipment/ledger/getDetail", {id})
         .then(res => {
           if (res) {
             // console.log(res);
+            delete res.data.data.id
             this.form.setFieldsValue(res.data.data)
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    // 查询
+    query () {
+      this.quarydata = this.quarydatas;
+      this.pagination.current = 1;
+      this.getlist()
+    },
+    // 页码改变时重新获取数据
+    pagechange (pagination) {
+      if(this.pagination.pageSize !== pagination.pageSize){
+        pagination.current = 1;
+      }
+      this.pagination = pagination;
+      this.getlist()
     },
   },
 }
@@ -534,6 +560,11 @@ export default {
       margin-left: 15px;
     }
   }
+}
+.ant-select-disabled,.ant-select-disabled .ant-select-selection, .ant-input-disabled {
+  background-color: #fff;
+  cursor: default;
+  color: rgba(0, 0, 0, 0.65);
 }
 div{}
 </style>

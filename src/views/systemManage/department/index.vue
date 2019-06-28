@@ -68,7 +68,7 @@
         </a-form-item>
       </a-form>
     </a-card>
-    <a-card :body-style="{padding: '0 10px',height: 'calc(100vh - 265px)'}">
+    <a-card :body-style="{padding: '0 10px',height: 'calc(100vh - 275px)'}">
       <h3>单位列表</h3>
       <div style="padding:30px 5px 15px">
         <a-table :columns="columns"
@@ -77,13 +77,13 @@
                  :dataSource="data"
                  :pagination="pagination"
                  :loading="loading"
-                 :scroll="{ y: 'calc(100vh - 440px)'}"
+                 :scroll="{ y: 'calc(100vh - 460px)'}"
         >
           <template slot="operation" slot-scope="text, record, index">
             <div class='editable-row-operations'>
               <a @click="edit(record.id)">编辑</a>
               <a style="padding: 0 6px;color: #e6e6e6;">|</a>
-              <a @click="deleted(record.id)">删除</a>
+              <a @click="deleted(record.id, record.name)">删除</a>
             </div>
           </template>
         </a-table>
@@ -145,29 +145,29 @@ export default {
         {
           title: '单位名称',
           dataIndex: 'name',
-          width: 100,
+          width: 450,
         },
         {
           title: '单位简称',
           dataIndex: 'abbreviation',
-          width: 100,
+          width: 200,
         },
         {
           title: '操作',
           dataIndex: 'operation',
-          width: 100,
+          width: 110,
           scopedSlots: { customRender: 'operation' },
         }
       ], // 表格列
       data: [], // 表格数据
       pagination: {
         defaultCurrent: 1,
-        defaultPageSize: 5,
+        defaultPageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: total => `共 ${total} 条`,
         // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
-        pageSizeOptions: ['5', '10', '20', '30']
+        pageSizeOptions: ['10', '20', '30']
       }, // 分页配置
       loading: false, // 表格是否加载中
     };
@@ -201,12 +201,14 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          // console.log('Received values of form: ', values);
           var { name, abbreviation, type } = values
           this.$post("department/create", {name: name,abbreviation:abbreviation,type:type})
             .then(res => {
               if (res) {
-                console.log(res);
+                // console.log(res);
+                this.$message.success('添加成功', 1);
+                this.getlist()
               }
             })
             .catch(err => {
@@ -221,11 +223,16 @@ export default {
       this.$get("department/queryList")
         .then(res => {
           if (res) {
-            console.log(res);
+            // console.log(res);
             this.data = res.data.data
-            this.data.forEach((val) => {
-              val.key = val.id
-            })
+            if(this.data.length > 0){
+              document.getElementsByClassName('ant-table-body')[0].style.height = 'calc(100vh - 460px)'
+              this.data.forEach((val) => {
+                val.key = val.id
+              })
+            }else {
+              document.getElementsByClassName('ant-table-body')[0].style.height = 'unset'
+            }
           }
         })
         .catch(err => {
@@ -237,7 +244,7 @@ export default {
       this.$get("department/getDetail", {id: id})
         .then(res => {
           if (res) {
-            console.log(res);
+            // console.log(res);
             this.editinfo = res.data.data
             this.editinfo.type = Number(this.editinfo.typeId)
             this.visible = true
@@ -250,12 +257,12 @@ export default {
     // 确认修改
     handleOk () {
       if (this.editinfo.name === '') {
-        console.log(this.message);
-        this.$message.warning('单位名称不能为空', 2)
+        // console.log(this.message);
+        this.$message.warning('单位名称不能为空', 1)
         return
       }
       if (this.editinfo.abbreviation === '') {
-        this.$message.warning('单位简称不能为空', 2);
+        this.$message.warning('单位简称不能为空', 1);
         return
       }
       if (isNaN(this.editinfo.type)) {
@@ -264,34 +271,45 @@ export default {
       this.$post("department/updateById", this.editinfo)
         .then(res => {
           if (res) {
-            console.log(res);
+            // console.log(res);
             this.getlist()
+            this.visible = false
+            this.$message.success('编辑成功', 1);
           }
         })
         .catch(err => {
+          this.visible = false
           console.log(err);
         });
-      this.visible = false
-      this.$message.success('编辑成功',2);
     },
     // 取消修改
     handleCancel () {
       this.visible = false
-      console.log('cancel');
+      // console.log('cancel');
     },
     // 删除单位信息
-    deleted (id) {
-      this.$post("department/delete", {id: id})
-        .then(res => {
-          if (res) {
-            console.log(res);
-            this.getlist()
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+    deleted (id, name) {
+      this.$modal.confirm({
+        title: '是否确认删除' + name,
+        centered: true,
+        onOk: () => {
+          this.$post("department/delete", {id})
+            .then(res => {
+              if (res) {
+                // console.log(res);
+                this.$message.success('删除成功', 1)
+                this.getlist()
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        },
+        onCancel() {
+          // console.log('Cancel');
+        },
+      });
+    },
   },
 };
 </script>
