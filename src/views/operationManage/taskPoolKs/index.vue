@@ -6,7 +6,7 @@
 					<div class="card-container">
 						<a-tabs type="card"  v-model="activeKey" @click="change(activeKey)">
 							 <a-tab-pane :tab="taskTab.name" :key="taskTab.status" v-for="(taskTab,index) in taskTabTitle">
-								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }" @change="pagechange" :pagination="pagination" :customRow="click">
+								<a-table :columns="columns" :dataSource="data" :scroll="{ x: 1300 }" @change="pagechange" :pagination="pagination" :customRow="click" :rowClassName="setRowClassName">
 									<a slot="action" slot-scope="text" href="javascript:;">打印</a>
 								</a-table>
 							</a-tab-pane>
@@ -68,19 +68,25 @@
 .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane[data-v-5412eb2e]{
 	padding: 0;
 }
+.clickRowStyl{
+	background-color:#00b4ed;
+}
+.ant-table-tbody>.clickRowStyl:hover>td{
+	background-color:#00b4ed;
+} 
 </style>
 <script>
 import pageHeader from '@/components/pageHeader.vue'
 import taskDetail from '@/components/taskDetail.vue'
 const columns = [
-  { title: '任务编号', width: 120, dataIndex: 'taskNum', key: 'name', fixed: 'left' },
-  { title: '状态', width: 100, dataIndex: '', key: 'age', fixed: 'left' },
-  { title: '任务大类', dataIndex: 'bigLevel', key: '1' },
-  { title: '紧急程度', dataIndex:'urgencyDegree', key: '2' },
-  { title: '上报时间', dataIndex: 'reportTime', key: '3' },
-  { title: '地点/路线', dataIndex:'siteName', key: '4' },
-  { title: '任务来源', dataIndex: 'source', key: '5' },
-  { title: '剩余时间', dataIndex: 'expend',key: '6' },
+  { title: '任务编号', width: 120, dataIndex: 'taskNum', key: '1', fixed: 'left' },
+  { title: '状态', width: 100, dataIndex: '', key: '2', fixed: 'left' },
+  { title: '任务大类', dataIndex: 'bigLevel', key: '3' },
+  { title: '紧急程度', dataIndex:'urgencyDegree', key: '4' },
+  { title: '上报时间', dataIndex: 'reportTime', key: '5' },
+  { title: '地点/路线', dataIndex:'siteName', key: '6' },
+  { title: '任务来源', dataIndex: 'source', key: '7' },
+  { title: '剩余时间', dataIndex: 'expend',key: '8' },
   {
     title: '操作',
     key: 'operation',
@@ -111,7 +117,7 @@ export default {
 			  showTotal: total => `共 ${total} 条`,
 			  // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
 			  pageSizeOptions: ['10', '20', '30', '40', '50']
-			}, // 分页配置
+			}
     }
   },
 	components: {
@@ -144,13 +150,23 @@ export default {
         return {
             on: {
                click: () => {
+								 console.log(8888888888888888);
+								 console.log(record);
+								 this.setState({
+                    rowId: record.taskId,
+                });
 								 this.rowDetails = record;
+								 
 								 console.log(99888);
 								 console.log(this.rowDetails);
                }
             }
         }
-    }
+    },
+		setRowClassName(record, index){
+			console.log(89898989)
+			console.log(record)
+		}
   },
 	mounted(){
 		
