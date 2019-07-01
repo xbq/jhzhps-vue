@@ -150,22 +150,12 @@ export default {
         return {
             on: {
                click: () => {
-								 console.log(8888888888888888);
-								 console.log(record);
-								 this.setState({
-                    rowId: record.taskId,
-                });
 								 this.rowDetails = record;
-								 
-								 console.log(99888);
-								 console.log(this.rowDetails);
                }
             }
         }
     },
 		setRowClassName(record, index){
-			console.log(89898989)
-			console.log(record)
 		}
   },
 	mounted(){
