@@ -133,4 +133,20 @@ h3:before {
   letter-spacing: 1px;
   color: #323232;
 }
+.hiddenicon{
+  &:before{
+    display: none;
+  }
+  .ant-tree-switcher-noop{
+    visibility: hidden;
+  }
+}
+.blue{
+  &:before{
+    display: none;
+  }
+  .ant-tree-switcher{
+    color: #009dff!important;
+  }
+}
 </style>

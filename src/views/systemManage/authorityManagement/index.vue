@@ -92,8 +92,9 @@
       <a-tree
               showLine
               checkable
-              :selectedKeys="selectedKeys"
               :treeData="treeData"
+              v-model="checkedKeys"
+              @check="onCheck"
       />
     </a-modal>
   </div>
@@ -174,7 +175,7 @@ export default {
         title: '0-2',
         key: '0-2',
       }],
-      selectedKeys: [],
+      checkedKeys: [],
     };
   },
   created(){
@@ -239,6 +240,7 @@ export default {
           if (res) {
             console.log(res);
             console.log(JSON.parse(res.data.data.auth));
+            this.rearr(JSON.parse(res.data.data.auth))
             // this.editinfo = res.data.data
             // this.editinfo.type = Number(this.editinfo.typeId)
             this.visible = true
@@ -248,33 +250,47 @@ export default {
           console.log(err);
         });
     },
+    // 递归
+    rearr(arr){
+      // arr.forEach((val) => {
+      //   if(val.children){
+      //     if(val.children.length>1){
+      //       this.rearr(val.children)
+      //     }else {
+      //       this.treeData.push({
+      //         title: val.children[0].title,
+      //         key: val.children[0].title,
+      //       })
+      //     }
+      //   }else {
+      //     this.treeData.push({
+      //       title: val.title,
+      //       key: val.title,
+      //     })
+      //   }
+      // })
+      // this.tr
+    },
+    onCheck (checkedKeys, info) {
+      // console.log('onCheck', checkedKeys, info)
+      this.checkedKeys = checkedKeys
+    },
     // 确认修改
     handleOk () {
-      if (this.editinfo.name === '') {
-        console.log(this.message);
-        this.$message.warning('单位名称不能为空', 1)
-        return
-      }
-      if (this.editinfo.abbreviation === '') {
-        this.$message.warning('单位简称不能为空', 1);
-        return
-      }
-      if (isNaN(this.editinfo.type)) {
-        this.editinfo.type = Number(this.editinfo.typeId)
-      }
-      this.$post("department/updateById", this.editinfo)
-        .then(res => {
-          if (res) {
-            console.log(res);
-            this.getlist()
-            this.visible = false
-            this.$message.success('编辑成功', 1);
-          }
-        })
-        .catch(err => {
-          this.visible = false
-          console.log(err);
-        });
+      console.log(this.checkedKeys);
+      // this.$post("department/updateById", this.editinfo)
+      //   .then(res => {
+      //     if (res) {
+      //       console.log(res);
+      //       this.getlist()
+      //       this.visible = false
+      //       this.$message.success('编辑成功', 1);
+      //     }
+      //   })
+      //   .catch(err => {
+      //     this.visible = false
+      //     console.log(err);
+      //   });
     },
     // 取消修改
     handleCancel () {

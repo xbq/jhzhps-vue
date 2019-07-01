@@ -4,6 +4,7 @@
       <h3>字典管理</h3>
       <div class="mycardcont">
         <a-tree
+                showIcon showLine
                 :loadData="onLoadData"
                 :treeData="treeData"
                 @select="select"
@@ -11,13 +12,16 @@
           <template slot="custom" slot-scope="item">
             <span @mouseenter="hoverkey=item.key" @mouseleave="hoverkey=0">{{ item.title }}</span>
             <span class="completeday" v-if="item.rank === 4">
-              <input type="text" :value="item.completeDay">天
+              <input type="text" @change="daychange($event, item)" :value="item.completeDay">天
             </span>
             <div class="action" :style="item.rank === 4?'right: -130px':''" v-show="item.key===activekeys||item.key===hoverkey">
               <a title='添加子节点' @click="add(item)" v-if="!item.isLeaf"><a-icon type="plus" /></a>
               <a title='编辑当前节点' @click="edit(item)"><a-icon type="form" /></a>
               <a title='删除当前节点' @click="remove(item)"><a-icon type="delete" /></a>
             </div>
+          </template>
+          <template slot="icon" slot-scope="{expanded, isLeaf}">
+            <a-icon :type="isLeaf?'profile':expanded ? 'folder-open':'folder'" />
           </template>
         </a-tree>
       </div>
@@ -66,11 +70,11 @@ export default {
     this.$get("dic/getType", {})
       .then(res => {
         if (res) {
-          console.log(res);
           this.treeData.push({
             title: res.data.data.name,
             key: res.data.data.id,
-            scopedSlots: { title: 'custom' },
+            scopedSlots: { title: 'custom', icon: 'icon' },
+            class: 'blue',
             ...res.data.data,
           })
         }
@@ -80,9 +84,29 @@ export default {
       });
   },
   methods: {
+    // 修改任务完成时限
+    daychange(e, data) {
+      let completeDay = e.target.value
+      this.$post("dic/update", {
+        id: data.id,
+        completeDay
+      }).then(res => {
+        if (res) {
+          if(res.data.msg === 'success'){
+            this.getlist(this.activekey.$parent)
+            this.$message.success(this.activekey.$parent.$parent.dataRef.name+this.activekey.$parent.dataRef.name+data.name+'的任务完成时限已修改为'+completeDay+'天', 1)
+          }else {
+            this.$message.error('修改失败', 1)
+            e.target.value = e.target._value
+          }
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     // 添加节点
     add(data) {
-      console.log(data);
+      // console.log(data);
       this.visible = true
       this.title = '新增'
       data.name = ''
@@ -101,8 +125,8 @@ export default {
           this.$get("dic/del", {dicId: data.id}).then(res => {
             if (res) {
               // console.log(res);
-              this.getlist(this.activekey.$parent)
               if(res.data.msg === 'success'){
+                this.getlist(this.activekey.$parent)
                 this.$message.success('删除成功', 1)
               }else {
                 this.$message.error('删除失败', 1)
@@ -119,8 +143,10 @@ export default {
     },
     // 编辑节点
     edit(data) {
+      console.log(data);
       this.title = '编辑'
       this.visible = true
+      data.name = data.title
       this.datas = data
     },
     // 选中节点
@@ -128,24 +154,27 @@ export default {
       this.activekeys = data[0]
       this.activekey = treeNode.node
     },
-    getlist(treeNode, resolve) {
+    getlist(treeNode, resolve, node='') {
       this.$get("dic/getList", {limit: -1, parentId: treeNode.dataRef.key})
         .then(res => {
           if (res) {
-            console.log(res);
+            // console.log(res);
             treeNode.dataRef.children = []
             res.data.data.forEach((val) => {
               treeNode.dataRef.children.push({
                 title: val.name,
                 key: val.id,
                 isLeaf: val.type === '任务类型管理'?val.rank === 4:val.rank === 2,
-                scopedSlots: { title: 'custom' },
+                class: (val.type === '任务类型管理'&&val.rank ===4) || (val.type !== '任务类型管理' && val.rank === 2) ?'hiddenicon':'blue',
+                scopedSlots: { title: 'custom', icon: 'icon'},
                 ...val,
               })
             })
+            // console.log(this.treeData);
             this.treeData = [...this.treeData]
+            // console.log(this.treeData);
             if(resolve){
-              resolve()
+              resolve(node)
             }
             this.visible = false
           }
@@ -179,8 +208,8 @@ export default {
         }).then(res => {
           if (res) {
             // console.log(res);
-            this.getlist(this.activekey)
             if(res.data.msg === 'success'){
+              this.getlist(this.activekey)
               this.$message.success('添加成功', 1)
             }else {
               this.$message.error('修改失败', 1)
@@ -196,8 +225,8 @@ export default {
         }).then(res => {
           if (res) {
             // console.log(res);
-            this.getlist(this.activekey.$parent)
             if(res.data.msg === 'success'){
+              this.getlist(this.activekey.$parent, this.getlist,this.activekey)
               this.$message.success('修改成功', 1)
             }else {
               this.$message.error('修改失败', 1)
@@ -223,9 +252,9 @@ export default {
   right: -80px;
   width: 70px;
   top: -2px;
-  color: #0095ff;
   a{
     padding: 0 5px;
+    color: #0095ff;
   }
 }
 .completeday{

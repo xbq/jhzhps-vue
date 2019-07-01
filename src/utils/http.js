@@ -20,6 +20,9 @@ axios.interceptors.request.use(
             config.params.access_token = token;
           }
         }
+      if(config.url === 'dic/create'){
+        config.headers.login_token = token
+        }
         if(config.method === 'post') {
             config.data = qs.stringify(config.data);
           }
