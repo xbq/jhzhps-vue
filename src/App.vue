@@ -125,4 +125,12 @@ h3:before {
   background: #fff;
   color: #000;
 }
+/*树样式*/
+.ant-tree-title{
+  position: relative;
+}
+.ant-tree li .ant-tree-node-content-wrapper{
+  letter-spacing: 1px;
+  color: #323232;
+}
 </style>
