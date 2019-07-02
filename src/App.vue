@@ -149,4 +149,10 @@ h3:before {
     color: #009dff!important;
   }
 }
+/*表格选中行样式  */
+.tableactive{
+  background-color: #e9f6ff;
+  border-color: #009dff;
+  color: #009dff;
+}
 </style>

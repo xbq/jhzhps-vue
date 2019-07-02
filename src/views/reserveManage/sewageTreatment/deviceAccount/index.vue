@@ -279,13 +279,17 @@ export default {
       ], //表格列
       data: [],  //表格数据
       pagination: {
+        current: 1,
         defaultCurrent: 1,
         defaultPageSize: 10,
+        pageSize: 10,
         showQuickJumper: true,
         showSizeChanger: true,
+        size: 'small',
+        total: 0,
         showTotal: total => `共 ${total} 条`,
         // onShowSizeChange:(current, pageSize)=>this.pageSize = pageSize,
-        pageSizeOptions: ['10', '20', '30']
+        pageSizeOptions: ['10', '20', '30', '40', '50']
       }, // 分页配置
       loading: false, // 表格是否加载中
       quarydatas: {
@@ -415,6 +419,7 @@ export default {
             res.data.data.forEach((val) => {
               val.key = val.id
             })
+            this.pagination.total = res.data.count
             this.data = res.data.data
           }
         })
