@@ -85,17 +85,19 @@
           </a-input>
         </a-form-item>
         <a-form-item label="单位简称" :labelCol="{span: 5}" :wrapperCol="{span: 16, offset: 1}">
-          <a-input  v-model="editinfo.abbreviation">
+          <a-input  v-model="editinfo.instruction">
           </a-input>
         </a-form-item>
       </a-form>
-      <a-tree
-              showLine
-              checkable
-              :treeData="treeData"
-              v-model="checkedKeys"
-              @check="onCheck"
-      />
+      <div class="tree">
+        <a-tree
+                showLine
+                checkable
+                :treeData="treeData"
+                v-model="checkedKeys"
+                @check="onCheck"
+        />
+      </div>
     </a-modal>
   </div>
 </template>
@@ -140,42 +142,9 @@ export default {
         pageSizeOptions: ['10', '20', '30']
       }, // 分页配置
       loading: false, // 表格是否加载中
-      treeData: [{
-        title: '0-0',
-        key: '0-0',
-        children: [{
-          title: '0-0-0',
-          key: '0-0-0',
-          children: [
-            { title: '0-0-0-0', key: '0-0-0-0' , icon: false},
-            { title: '0-0-0-1', key: '0-0-0-1' },
-            { title: '0-0-0-2', key: '0-0-0-2' },
-          ],
-        }, {
-          title: '0-0-1',
-          key: '0-0-1',
-          children: [
-            { title: '0-0-1-0', key: '0-0-1-0' },
-            { title: '0-0-1-1', key: '0-0-1-1' },
-            { title: '0-0-1-2', key: '0-0-1-2' },
-          ],
-        }, {
-          title: '0-0-2',
-          key: '0-0-2',
-        }],
-      }, {
-        title: '0-1',
-        key: '0-1',
-        children: [
-          { title: '0-1-0-0', key: '0-1-0-0' },
-          { title: '0-1-0-1', key: '0-1-0-1' },
-          { title: '0-1-0-2', key: '0-1-0-2' },
-        ],
-      }, {
-        title: '0-2',
-        key: '0-2',
-      }],
-      checkedKeys: [],
+      treeData: [], // 树的数据
+      checkedKeys: [], // 选中的数据key值
+      key: 0, // 设置key值
     };
   },
   created(){
@@ -239,45 +208,58 @@ export default {
         .then(res => {
           if (res) {
             console.log(res);
+            this.editinfo = res.data.data
             console.log(JSON.parse(res.data.data.auth));
-            this.rearr(JSON.parse(res.data.data.auth))
+            this.treeData = JSON.parse(res.data.data.auth);
+            this.rearr(this.treeData);
             // this.editinfo = res.data.data
             // this.editinfo.type = Number(this.editinfo.typeId)
-            this.visible = true
+            this.visible = true;
+            console.log(this.treeData);
           }
         })
         .catch(err => {
           console.log(err);
         });
     },
-    // 递归
+    // 递归处理
     rearr(arr){
-      // arr.forEach((val) => {
-      //   if(val.children){
-      //     if(val.children.length>1){
-      //       this.rearr(val.children)
-      //     }else {
-      //       this.treeData.push({
-      //         title: val.children[0].title,
-      //         key: val.children[0].title,
-      //       })
-      //     }
-      //   }else {
-      //     this.treeData.push({
-      //       title: val.title,
-      //       key: val.title,
-      //     })
-      //   }
-      // })
-      // this.tr
+      arr.forEach(val => {
+        if(val.children){
+          this.rearr(val.children)
+          val.class = 'blue'
+        } else {
+          val.class = 'hiddenicon'
+        }
+        val.title = val.meta.title
+        val.key = this.key++
+        if (val.checked) {
+          this.checkedKeys.push(val.key)
+        }
+      })
     },
-    onCheck (checkedKeys, info) {
+    // 递归反处理
+    rearrparse(arr) {
+      arr.forEach(val => {
+        if (val.children) {
+          this.rearrparse(val.children)
+        }
+        val.checked = this.checkedKeys.includes(val.key);
+        delete val.title
+        delete val.key
+        delete val.class
+      })
+    },
+    onCheck (checkedKeys) {
       // console.log('onCheck', checkedKeys, info)
       this.checkedKeys = checkedKeys
     },
     // 确认修改
     handleOk () {
-      console.log(this.checkedKeys);
+      this.rearrparse(this.treeData);
+      this.editinfo.auth = JSON.stringify(this.treeData);
+      this.checkedKeys = [];
+      this.treeData = [];
       // this.$post("department/updateById", this.editinfo)
       //   .then(res => {
       //     if (res) {
@@ -331,5 +313,10 @@ export default {
 .ant-card-bordered{
   border: 0;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+}
+.tree{
+  height: 380px;
+  overflow: auto;
+  padding: 0 60px;
 }
 </style>
