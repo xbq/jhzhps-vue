@@ -247,7 +247,7 @@
 
 <script>
 import waternewdata from './components/water-newdata'
-import nodata from '../../../components/nodata'
+import nodata from '@/components/nodata'
 export default {
   data() {
     return {
