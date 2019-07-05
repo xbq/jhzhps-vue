@@ -42,9 +42,11 @@
         <img v-if="!(afterpicture&&afterpicture.length>0)" src="../assets/img/noImg.png" alt="">
         <imgcarousel v-else :imgs="afterpicture" :height="'157px'" :imgvisible='imgvisible' @imgdetail="imgdetail"></imgcarousel>
       </div>
-      <a-button type="primary" @click="seedetail">查看详情</a-button>
+      <a-button type="primary" @click="seedetail" v-if="JSON.stringify(rowTaskDetail) !== '{}'">查看详情</a-button>
+      <a-button v-else style="background-color: rgb(204, 204, 204);pointer-events: none;color: #fff">查看详情</a-button>
     </div>
     <a-modal
+            destroyOnClose
             :title="'任务编号为' + details.taskId + '的任务详情'"
             :visible="visible"
             @ok="handleOk"
@@ -206,9 +208,10 @@ export default {
     }
   },
   watch: {
-    details: {
-      handler(newValue, oldValue) {
-        this.$get("task/getById", {'taskId': newValue.taskId}).then(res => {
+    details() {
+      // console.log(this.details);
+      if (this.details.taskId) {
+        this.$get("task/getById", {'taskId': this.details.taskId}).then(res => {
           if (res.data.data.beforePicUrl) {
             res.data.data.beforePicUrl =  res.data.data.beforePicUrl.split(',');
           }
@@ -253,7 +256,7 @@ export default {
           this.rowTaskDetail = res.data.data;
           // console.log(this.rowTaskDetail);
         })
-        this.$get("task/record/queryByTaskId", {'taskId': newValue.taskId}).then(res => {
+        this.$get("task/record/queryByTaskId", {'taskId': this.details.taskId}).then(res => {
           // console.log(res);
           this.afterpicture = []
           if (res.data.data && res.data.data.length>0) {
@@ -268,7 +271,15 @@ export default {
             this.taskrecord = []
           }
         })
+      }else {
+        this.rowTaskDetail = {}
+        this.afterpicture = []
+        this.taskrecord = []
       }
+
+      // handler(newValue, oldValue) {
+      //
+      // }
     }
   },
   created() {
@@ -471,6 +482,7 @@ export default {
       margin-top: 10px;
       font-size: 0;
       height: 70px;
+      display: flex;
       div{
         width: 70px;
         height: 70px;

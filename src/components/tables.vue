@@ -6,7 +6,7 @@
         <a-button size="large" type="primary" @click="searchs">查询</a-button>
       </div>
     </div>
-    <a-table :rowClassName="(record,index)=>{return record.key===tableactive?'tableactive':''}" size="middle" :customRow="customRow" :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="scroll" :pagination="pagination" @change="pagechange"
+    <a-table :rowClassName="(record,index)=>{return record.key===tableactive?'tableactive':''}" size="middle" :customRow="customRow" :columns="columns" :dataSource="data" :style="{marginTop: '20px'}" :scroll="{ y: 'calc(100vh - 379px)', x: 1330}" :pagination="pagination" @change="pagechange"
              :loading="loading">
       <a slot="action" slot-scope="text" href="javascript:;">打印</a>
     </a-table>
@@ -60,7 +60,24 @@
     mounted() {
       // this.getlist()
     },
-    props: ['status', 'columns', 'scroll'],
+    props: {
+      status: Number,
+      columns: Array,
+      getlistdata: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
+    },
+    watch: {
+      status() {
+        this.quarydatas = {};
+        this.pagination.pageSize = 10;
+        this.pagination.current = 1;
+        this.getlist()
+      }
+    },
     methods: {
       // 搜索
       searchs() {
@@ -71,7 +88,7 @@
       },
       getlist () {
         // 科室审核通过表格数据
-        this.$get("task/getList", {status: this.status, limit: this.pagination.pageSize, page: this.pagination.current, ...this.quarydatas})
+        this.$get("task/getList", {status: this.status, ...this.getlistdata, limit: this.pagination.pageSize, page: this.pagination.current, ...this.quarydatas})
           .then(res => {
             if (res) {
               // console.log(res);
@@ -85,7 +102,8 @@
                 this.$emit('rowDetails', this.data[0])
                 this.tableactive = 0
               }else {
-                this.date = []
+                this.data = []
+                this.$emit('rowDetails', {})
               }
             }
           })
